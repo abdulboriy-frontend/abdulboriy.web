@@ -8,15 +8,16 @@ function Navbar({ cartCount }) {
   return (
     <nav className="navbar">
 
-      <div className="logo">
-        <img
-          src={Background}
-          alt="Logo"
-          className="logo-img"
-        />
-
-        <h2>Minibaba</h2>
-      </div>
+    <div className="logo">
+  <Link to="/">
+    <img
+      src={Background}
+      alt="Logo"
+      className="logo-img"
+    />  
+  </Link>
+<h2>Minibaba</h2>
+</div>
 
       <div className="search-wrapper">
 

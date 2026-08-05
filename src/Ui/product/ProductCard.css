@@ -62,14 +62,16 @@ max-width: 1300px;
 
 
 @media (max-width: 480px) {
+  @media (max-width: 480px) {
   .panjara {
+    display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
+    justify-content: center;
+    margin: 0 auto;
   }
+}
 
-  .konteyner {
-    padding: 12px;
-  }
 
   .tepa-qism {
     margin-bottom: 20px;
@@ -81,5 +83,15 @@ max-width: 1300px;
 
   .tepa-qism a {
     font-size: 13px;
+  } .konteyner {
+    margin: 0 auto;
+    margin-left: 10px;
   }
+
 }
+  
+
+
+
+
+ 

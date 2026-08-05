@@ -41,12 +41,12 @@ function ProductDetail({ onAddToCart }) {
         setProduct(foundProduct);
       })
       .catch((error) => {
-        console.error("Mahsulotni olishda xatolik:", error);
+        console.error( error);
       });
   }, [slug]);
 
   if (!product) {
-    return <div className="loading">Mahsulot yuklanmoqda...</div>;
+    return <div className="loading"></div>;
   }
 
   const images =
@@ -109,13 +109,8 @@ function ProductDetail({ onAddToCart }) {
     <div className="product-detail-page">
       <div className="detail-container">
 
-        <button
-          className="back-btn"
-          onClick={() => navigate(-1)}
-        >
-          <ArrowLeft size={19} />
-          Orqaga
-        </button>
+    
+        
 
         <div className="detail-main-grid">
 
@@ -150,7 +145,6 @@ function ProductDetail({ onAddToCart }) {
 
           </div>
 
-          {/* MAHSULOT MA'LUMOTI */}
           <div className="info-section">
 
             <div className="badge-row">
