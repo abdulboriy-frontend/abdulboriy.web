@@ -1,5 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+
+import {
+  ArrowLeft,
+  BadgeCheck,
+  FileText,
+  MapPin,
+  MessageCircle,
+  Minus,
+  Package,
+  Plus,
+  ShoppingCart,
+  Star,
+  Store,
+  Truck,
+} from "lucide-react";
+
 import "./ProductDetails.css";
 
 function ProductDetail({ onAddToCart }) {
@@ -7,224 +23,492 @@ function ProductDetail({ onAddToCart }) {
   const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
-  const [sanoq, setSanoq] = useState(1);
+  const [quantity, setQuantity] = useState(1);
+  const [selectedImage, setSelectedImage] = useState(0);
+  const [selectedVariant, setSelectedVariant] = useState("Pro-Max X1");
   const [activeTab, setActiveTab] = useState("description");
-  const [variant, setVariant] = useState("Pro-Max X1");
 
   useEffect(() => {
     fetch("https://uzum-api.onrender.com/api/products")
-      .then((res) => res.json())
-      .then((json) => {
-        if (json?.success) {
-          const topilgan = json.data.find((item) => (item.slug || item.id) == slug);
-          setProduct(topilgan);
-        }
+      .then((response) => response.json())
+      .then((result) => {
+        if (!result.success) return;
+
+        const foundProduct = result.data.find(
+          (item) => String(item.slug || item.id) === String(slug)
+        );
+
+        setProduct(foundProduct);
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error("Mahsulotni olishda xatolik:", error);
+      });
   }, [slug]);
 
-  if (!product) return <div className="loading">Yuklanmoqda...</div>;
+  if (!product) {
+    return <div className="loading">Mahsulot yuklanmoqda...</div>;
+  }
 
-  
-  const basePrice1 = product.price || 1200;
-  const basePrice2 = product.discountedPrice || 1050;
-  const basePrice3 = 890;
+  const images =
+    product.images?.length > 0
+      ? product.images
+      : [product.imageUrl || "https://via.placeholder.com/600"];
 
-  const price1 = basePrice1 * sanoq;
-  const price2 = basePrice2 * sanoq;
-  const price3 = basePrice3 * sanoq;
+  const variants = [
+    "Standard",
+    "Eco-Flow",
+    "Pro-Max X1",
+    "Heavy Duty",
+    "Compact",
+  ];
 
-  
-  const jamiNarx = sanoq > 50 ? price3 : sanoq >= 11 ? price2 : price1;
+  const normalPrice = Number(product.price) || 1200;
+  const discountPrice =
+    Number(product.discountedPrice) || normalPrice;
 
-  const rasmlar = product.images || Array(5).fill(product.imageUrl || "https://via.placeholder.com/400");
-  const variants = ["Standard", "Eco-Flow", "Pro-Max X1", "Heavy Duty", "Compact"];
+  let unitPrice = normalPrice;
 
- 
-  const handleCartClick = () => {
-    if (onAddToCart) {
-      onAddToCart(sanoq);
-    }
-  };
+  if (quantity >= 11 && quantity <= 50) {
+    unitPrice = discountPrice;
+  }
+
+  if (quantity >= 51) {
+    unitPrice = 890;
+  }
+
+  const totalPrice = unitPrice * quantity;
+
+  function increaseQuantity() {
+    setQuantity((oldQuantity) => oldQuantity + 1);
+  }
+
+  function decreaseQuantity() {
+    setQuantity((oldQuantity) =>
+      Math.max(1, oldQuantity - 1)
+    );
+  }
+
+  function handleAddToCart() {
+    const cartProduct = {
+      id: product.id,
+      name: product.name || product.title || "Nomsiz mahsulot",
+      image: product.imageUrl || images[0] || "",
+      price: unitPrice,
+    };
+
+    onAddToCart(
+      cartProduct,
+      quantity,
+      selectedVariant
+    );
+
+    navigate("/cart");
+  }
 
   return (
     <div className="product-detail-page">
       <div className="detail-container">
-        <div className="top-header-line">
-          <button className="back-btn" onClick={() => navigate(-1)}>← Orqaga</button>
-        </div>
+
+        <button
+          className="back-btn"
+          onClick={() => navigate(-1)}
+        >
+          <ArrowLeft size={19} />
+          Orqaga
+        </button>
 
         <div className="detail-main-grid">
+
           <div className="gallery-section">
+
             <div className="main-image-box">
-              <img src={rasmlar[0]} alt={product.name} />
+              <img
+                src={images[selectedImage]}
+                alt={product.name || "Mahsulot"}
+              />
             </div>
+
             <div className="thumbnail-list">
-              {rasmlar.slice(0, 5).map((img, i) => (
-                <div key={i} className={`thumb-item ${i === 0 ? "active" : ""}`}>
-                  <img src={img} alt="" />
-                </div>
+              {images.slice(0, 5).map((image, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  className={
+                    selectedImage === index
+                      ? "thumb-item active"
+                      : "thumb-item"
+                  }
+                  onClick={() => setSelectedImage(index)}
+                >
+                  <img
+                    src={image}
+                    alt="Mahsulot"
+                  />
+                </button>
               ))}
             </div>
+
           </div>
 
+          {/* MAHSULOT MA'LUMOTI */}
           <div className="info-section">
+
             <div className="badge-row">
-              <span className="badge-new">Yangi mahsulot</span>
-              <span className="product-id">ID: {product.slug || product.id || "48293021-X200"}</span>
+              <span className="badge-new">
+                Yangi mahsulot
+              </span>
+
+              <span className="product-id">
+                ID: {product.slug || product.id}
+              </span>
             </div>
 
-            <h1 className="product-title">{product.name}</h1>
+            <h1 className="product-title">
+              {product.name || product.title}
+            </h1>
 
             <div className="rating-row">
-              <span className="stars">☆☆☆☆☆ 4.8</span>
-              <span>• 124 ta sharh</span>
-              <span>• 500+ sotilgan</span>
+              <div className="rating">
+                <Star
+                  size={17}
+                  fill="currentColor"
+                />
+                <span>4.8</span>
+              </div>
+
+              <span>124 ta sharh</span>
+              <span>500+ sotilgan</span>
             </div>
 
             <div className="wholesale-box">
+
               <div className="wholesale-header">
                 <h3>Ulgurji narxlar</h3>
-                <span className="moq-badge">📦 MOQ: {product.minOrderQuantity || 2} dona</span>
+
+                <div className="moq-badge">
+                  <Package size={16} />
+
+                  <span>
+                    MOQ:{" "}
+                    {product.minOrderQuantity || 2} dona
+                  </span>
+                </div>
               </div>
 
               <div className="price-cards-grid">
-                <div className={`price-card ${sanoq <= 10 ? "active" : ""}`} onClick={() => setSanoq(1)}>
-                  <small>1 - 10 dona</small>
-                  <span className="price-value">${price1}</span>
-                </div>
 
-                <div className={`price-card ${sanoq >= 11 && sanoq <= 50 ? "active" : ""}`} onClick={() => setSanoq(11)}>
-                  <small className="badge-popular">OMMABOP</small>
-                  <small>11 - 50 dona</small>
-                  <span className="price-value orange">${price2}</span>
-                </div>
+                <button
+                  type="button"
+                  className={
+                    quantity <= 10
+                      ? "price-card active"
+                      : "price-card"
+                  }
+                  onClick={() => setQuantity(1)}
+                >
+                  <span className="price-range">
+                    1 - 10 dona
+                  </span>
 
-                <div className={`price-card ${sanoq > 50 ? "active" : ""}`} onClick={() => setSanoq(51)}>
-                  <small>50+ dona</small>
-                  <span className="price-value">${price3}</span>
-                </div>
+                  <strong className="price-value">
+                    ${normalPrice.toFixed(2)}
+                  </strong>
+                </button>
+
+                <button
+                  type="button"
+                  className={
+                    quantity >= 11 && quantity <= 50
+                      ? "price-card active"
+                      : "price-card"
+                  }
+                  onClick={() => setQuantity(11)}
+                >
+                  <span className="popular-badge">
+                    OMMABOP
+                  </span>
+
+                  <span className="price-range">
+                    11 - 50 dona
+                  </span>
+
+                  <strong className="price-value">
+                    ${discountPrice.toFixed(2)}
+                  </strong>
+                </button>
+
+                <button type="button" className={quantity >= 51 ? "price-card active" : "price-card"} onClick={() => setQuantity(51)}>
+                  <span className="price-range">
+                    51+ dona
+                  </span>
+
+                  <strong className="price-value">
+                    $890.00
+                  </strong>
+                </button>
+
               </div>
             </div>
 
             <div className="variant-section">
-              <label>KONFIGURATSIYANI TANLANG (VARIANT 5 / 10)</label>
+
+              <h4 className="variant-title">
+                KONFIGURATSIYANI TANLANG
+              </h4>
+
               <div className="variant-buttons">
-                {variants.map((v) => (
+                {variants.map((variant) => (
                   <button
-                    key={v}
-                    className={`variant-btn ${variant === v ? "active" : ""}`}
-                    onClick={() => setVariant(v)}
+                    key={variant}
+                    type="button"
+                    className={
+                      selectedVariant === variant
+                        ? "variant-btn active"
+                        : "variant-btn"
+                    }
+                    onClick={() =>
+                      setSelectedVariant(variant)
+                    }
                   >
-                    {v}
+                    {variant}
                   </button>
                 ))}
               </div>
+
             </div>
 
             <div className="seller-card">
+
               <div className="seller-info">
-                <img src={product.seller?.logoUrl || "https://via.placeholder.com/48"} alt="" />
+
+                <div className="seller-logo">
+                  {product.seller?.logoUrl ? (
+                    <img
+                      src={product.seller.logoUrl}
+                      alt="Seller"
+                    />
+                  ) : (
+                    <Store size={23} />
+                  )}
+                </div>
+
                 <div>
-                  <h4>{product.seller?.name || "TechnoMach Tashkent MCHJ"}</h4>
+                  <h4>
+                    {product.seller?.name ||
+                      "UzTech Electronics"}
+                  </h4>
+
                   <div className="seller-tags">
-                    <span className="verified-tag">✔ TASDIQLANGAN</span>
-                    <span className="location-tag">📍 Tashkent, UZ • 8 yillik tajriba</span>
+
+                    <span>
+                      <BadgeCheck size={15} />
+                      TASDIQLANGAN
+                    </span>
+
+                    <span>
+                      <MapPin size={15} />
+                      Toshkent, UZ
+                    </span>
+
                   </div>
                 </div>
+
               </div>
-              <button className="store-btn">Do'konni ko'rish</button>
+
+              <button
+                type="button"
+                className="store-btn"
+              >
+                Do'konni ko'rish
+              </button>
+
             </div>
+
           </div>
         </div>
 
-        {/* Tablar */}
         <div className="tabs-container">
+
           <div className="tabs-header">
+
             <button
-              className={`tab-btn ${activeTab === "description" ? "active" : ""}`}
-              onClick={() => setActiveTab("description")}
+              className={
+                activeTab === "description"
+                  ? "tab-btn active"
+                  : "tab-btn"
+              }
+              onClick={() =>
+                setActiveTab("description")
+              }
             >
               Tavsif
             </button>
-            <button
-              className={`tab-btn ${activeTab === "delivery" ? "active" : ""}`}
-              onClick={() => setActiveTab("delivery")}
+
+            <button className={activeTab === "delivery" ? "tab-btn active" : "tab-btn"} onClick={() => setActiveTab("delivery")
+            }
             >
               Yetkazib berish
             </button>
+
             <button
-              className={`tab-btn ${activeTab === "review" ? "active" : ""}`}
-              onClick={() => setActiveTab("review")}
+              className={
+                activeTab === "reviews"
+                  ? "tab-btn active"
+                  : "tab-btn"
+              }
+              onClick={() =>
+                setActiveTab("reviews")
+              }
             >
               Sharhlar (124)
             </button>
+
           </div>
 
           <div className="tab-content">
+
             {activeTab === "description" && (
               <div className="description-layout">
-                <div className="desc-left">
-                  <h3>Mahsulot haqida ma'lumot</h3>
-                  <p>{product.description || "Model X200 sanoat konveyer tizimi yuqori yuklamalar ostida ishlashga mo'ljallangan. Uning modulli tuzilishi istalgan ishlab chiqarish liniyasiga oson integratsiya qilish imkonini beradi."}</p>
 
-                  <div className="specs-grid">
-                    <div className="spec-item"><small>QUVVATI</small><strong>5.5 kW / 7.5 HP</strong></div>
-                    <div className="spec-item"><small>TEZLIGI</small><strong>0.5 - 2.0 m/s</strong></div>
-                    <div className="spec-item"><small>YUK KO'TARISHI</small><strong>500 kg / m</strong></div>
-                    <div className="spec-item"><small>KAFOLAT</small><strong>24 oy kafolat</strong></div>
-                  </div>
+                <div>
+                  <h3>
+                    Mahsulot haqida
+                  </h3>
+
+                  <p>
+                    {product.description ||
+                      "Yuqori sifatli va ishonchli mahsulot."}
+                  </p>
                 </div>
 
-                <div className="desc-right">
+                <div>
                   <h3>Logistika</h3>
+
                   <div className="logistics-item">
-                    <span>🚚</span>
+                    <Truck size={24} />
+
                     <div>
-                      <strong>Tezkor yetkazib berish</strong>
-                      <p>Toshkent bo'ylab 24 soat ichida.</p>
+                      <strong>
+                        Tezkor yetkazib berish
+                      </strong>
+
+                      <p>
+                        Toshkent bo'ylab
+                        24 soat ichida.
+                      </p>
                     </div>
                   </div>
                 </div>
+
               </div>
             )}
 
             {activeTab === "delivery" && (
               <div className="tab-simple-text">
-                <p>🚚 Toshkent bo'ylab 24 soat ichida yetkaziladi.</p>
-                <p>📦 Viloyatlarga 2-5 ish kunida.</p>
+
+                <Truck size={27} />
+
+                <div>
+                  <h3>
+                    Yetkazib berish
+                  </h3>
+
+                  <p>
+                    Toshkent bo'ylab 24 soatda,
+                    viloyatlarga 2-5 ish kunida.
+                  </p>
+                </div>
+
               </div>
             )}
 
-            {activeTab === "review" && (
+            {activeTab === "reviews" && (
               <div className="tab-simple-text">
-                <h3>⭐⭐⭐⭐⭐ 4.8</h3>
-                <p>Juda sifatli va zo'r mahsulot!</p>
+
+                <Star
+                  size={28}
+                  fill="currentColor"
+                />
+
+                <div>
+                  <h3>4.8 / 5</h3>
+
+                  <p>
+                    Xaridorlar mahsulotni
+                    yaxshi baholagan.
+                  </p>
+                </div>
+
               </div>
             )}
+
           </div>
         </div>
 
         <div className="bottom-bar-panel">
+
           <div className="summary-price">
-            <small>Umumiy miqdor:</small>
-            <h2>${Number(jamiNarx).toFixed(2)}</h2>
+
+            <span className="total-title">
+              Umumiy narx
+            </span>
+
+            <strong className="total-price">
+              ${totalPrice.toFixed(2)}
+            </strong>
+
+            <small className="unit-price">
+              1 dona: ${unitPrice.toFixed(2)}
+            </small>
+
           </div>
 
           <div className="counter-controls">
-            <button onClick={() => setSanoq((p) => Math.max(1, p - 1))}>-</button>
-            <span>{sanoq}</span>
-            <button onClick={() => setSanoq((p) => p + 1)}>+</button>
+
+            <button
+              type="button"
+              onClick={decreaseQuantity}
+            >
+              <Minus size={18} />
+            </button>
+
+            <span>
+              {quantity}
+            </span>
+
+            <button
+              type="button"
+              onClick={increaseQuantity}
+            >
+              <Plus size={18} />
+            </button>
+
           </div>
 
           <div className="action-buttons">
-            <button className="btn-chat">💬 Chat orqali yozish</button>
-            <button className="btn-rfq">📋 RFQ</button>
-            <button className="btn-cart" onClick={handleCartClick}>
-              🛒 Savatga qo'shish
+
+            <button className="btn-chat">
+              <MessageCircle size={18} />
+              Chat orqali yozish
             </button>
+
+            <button className="btn-rfq">
+              <FileText size={18} />
+              RFQ
+            </button>
+
+            <button
+              className="btn-cart"
+              onClick={handleAddToCart}
+            >
+              <ShoppingCart size={18} />
+              Savatga qo'shish
+            </button>
+
           </div>
+
         </div>
+
       </div>
     </div>
   );

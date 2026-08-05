@@ -1,15 +1,17 @@
 import "./App.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import Navbar from "./Ui/navbar/navbar";
 import Hero from "./Ui/hero/hero";
 import ProductCard from "./Ui/product/ProductCard";
-import ProductDetail from "./pages/ProductDetails/ProductDetails";
 import Seller from "./Ui/seller/Seller";
 import Footer from "./Ui/footer/footer";
 import Login from "./Ui/Login/Login";
 import SellerCard from "./Ui/sellerCard/SellerCard";
+
+import ProductDetail from "./pages/ProductDetails/ProductDetails";
+import Cart from "./pages/Cart/Cart";
 
 function Home() {
   return (
@@ -22,12 +24,100 @@ function Home() {
 }
 
 function App() {
-  const [cartCount, setCartCount] = useState(0);
+  const [cartItems, setCartItems] = useState(() => {
+    const savedCart = localStorage.getItem("minibaba-cart");
+
+    if (savedCart) {
+      try {
+        return JSON.parse(savedCart);
+      } catch (error) {
+        console.error("Cart data parse error:", error);
+        return [];
+      }
+    }
+
+    return [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("minibaba-cart", JSON.stringify(cartItems));
+  }, [cartItems]);
+
+  
+  function handleAddToCart(product, quantity, variant) {
+    setCartItems((oldItems) => {
+      const existingItem = oldItems.find(
+        (item) => item.id === product.id && item.variant === variant
+      );
+
+  
+      if (existingItem) {
+        return oldItems.map((item) => {
+          if (item.id === product.id && item.variant === variant) {
+            return {
+              ...item,
+              quantity: item.quantity + quantity,
+            };
+          }
+          return item;
+        });
+      }
+
+    
+      const newItem = {
+        id: product.id,
+        name: product.name || product.title || "Nomsiz mahsulot",
+        image: product.image || product.imageUrl || "",
+        price: Number(product.price) || 0,
+        quantity: quantity,
+        variant: variant,
+      };
+
+      return [...oldItems, newItem];
+    });
+  }
 
 
-  const handleAddToCart = (sanoq) => {
-    setCartCount((prev) => prev + sanoq);
-  };
+  function increaseCartItem(id, variant) {
+    setCartItems((oldItems) =>
+      oldItems.map((item) => {
+        if (item.id === id && item.variant === variant) {
+          return { ...item, quantity: item.quantity + 1 };
+        }
+        return item;
+      })
+    );
+  }
+
+
+  function decreaseCartItem(id, variant) {
+    setCartItems((oldItems) =>
+      oldItems.map((item) => {
+        if (item.id === id && item.variant === variant) {
+          return {
+            ...item,
+            quantity: Math.max(1, item.quantity - 1),
+          };
+        }
+        return item;
+      })
+    );
+  }
+
+
+  function removeCartItem(id, variant) {
+    setCartItems((oldItems) =>
+      oldItems.filter(
+        (item) => !(item.id === id && item.variant === variant)
+      )
+    );
+  }
+
+ 
+  const cartCount = cartItems.reduce(
+    (total, item) => total + item.quantity,
+    0
+  );
 
   return (
     <>
@@ -40,6 +130,18 @@ function App() {
         <Route
           path="/product/:slug"
           element={<ProductDetail onAddToCart={handleAddToCart} />}
+        />
+
+        <Route
+          path="/cart"
+          element={
+            <Cart
+              cartItems={cartItems}
+              increaseCartItem={increaseCartItem}
+              decreaseCartItem={decreaseCartItem}
+              removeCartItem={removeCartItem}
+            />
+          }
         />
 
         <Route path="/seller/:slug" element={<SellerCard />} />

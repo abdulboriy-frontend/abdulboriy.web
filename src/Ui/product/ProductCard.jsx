@@ -29,7 +29,7 @@ function ProductCard() {
   }, []);
 
   if (loading) {
-    return <div className="loading"></div>;
+    return <div className="loading">yuklanamoqda</div>;
   }
 
   return (
@@ -52,11 +52,11 @@ function ProductCard() {
               narxi={`${buyum.discountedPrice?.toLocaleString()} ${
                 buyum.currency || "UZS"
               }`}
-              buyurtma={`Minimal buyurtma: ${buyum.minOrderQuantity} dona`}
+              buyurtma={`Minimal buyurtma: ${buyum.minOrderQuantity}`}
               holat={
                 buyum.isVerifiedSeller
                   ? "Tasdiqlangan Sotuvchi"
-                  : "Oddiy Sotuvchi"
+                    : "Oddiy Sotuvchi"
               }
               chegirma={
                 buyum.discountPercent > 0

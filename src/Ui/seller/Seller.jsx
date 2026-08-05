@@ -36,43 +36,43 @@ const Seller = () => {
 
   if (loading) {
     return (
-      <div className="loading">
-       
+      <div className="load-box">
+        
       </div>
     );
   }
 
   return (
-    <div className="seller-container">
+    <div className="sl-wrapper">
 
-      <h1 className="seller-title">
+      <h1 className="sl-heading">
         Tasdiqlangan sotuvchilar
       </h1>
 
-      <div className="seller-grid">
+      <div className="sl-layout">
 
         {sellers.map((seller) => (
 
           <div
-            className="seller-card"
+            className="sl-card"
             key={seller.id}
           >
 
-            <div className="seller-logo-box">
+            <div className="sl-thumb">
 
               <img
                 src={seller.logoUrl}
                 alt={seller.name}
-                className="seller-logo"
+                className="sl-pic"
               />
 
             </div>
 
-            <h2 className="seller-name">
+            <h2 className="sl-title">
               {seller.name}
             </h2>
 
-            <div className="seller-location">
+            <div className="sl-pin">
 
               <MapPin size={15} />
 
@@ -82,13 +82,13 @@ const Seller = () => {
 
             </div>
 
-            <p className="seller-experience">
+            <p className="sl-exp">
               {seller.experienceLabel}
             </p>
 
-            <div className="seller-stats">
+            <div className="sl-metrics">
 
-              <div className="stat-item">
+              <div className="st-box">
 
                 <ShieldCheck
                   size={16}
@@ -105,7 +105,7 @@ const Seller = () => {
 
               </div>
 
-              <div className="stat-item">
+              <div className="st-box">
 
                 <Clock3
                   size={16}
@@ -125,7 +125,7 @@ const Seller = () => {
             </div>
 
             <button
-              className="seller-btn"
+              className="btn-link"
               onClick={() =>
                 navigate(`/seller/${seller.slug}`)
               }
