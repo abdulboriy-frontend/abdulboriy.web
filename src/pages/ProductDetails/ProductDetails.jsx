@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 
 import {
-  ArrowLeft,
   BadgeCheck,
   FileText,
   MapPin,
@@ -28,10 +28,16 @@ function ProductDetail({ onAddToCart }) {
   const [selectedVariant, setSelectedVariant] = useState("Pro-Max X1");
   const [activeTab, setActiveTab] = useState("description");
 
+
   useEffect(() => {
-    fetch("https://uzum-api.onrender.com/api/products")
-      .then((response) => response.json())
-      .then((result) => {
+    const getProduct = async () => {
+      try {
+        const response = await axios.get(
+          "https://uzum-api.onrender.com/api/products"
+        );
+
+        const result = response.data;
+
         if (!result.success) return;
 
         const foundProduct = result.data.find(
@@ -39,14 +45,16 @@ function ProductDetail({ onAddToCart }) {
         );
 
         setProduct(foundProduct);
-      })
-      .catch((error) => {
-        console.error( error);
-      });
+      } catch (error) {
+        console.error("Axios xatosi:", error);
+      }
+    };
+
+    getProduct();
   }, [slug]);
 
   if (!product) {
-    return <div className="loading"></div>;
+    return <div className="loading">Yuklanmoqda...</div>;
   }
 
   const images =
@@ -63,8 +71,7 @@ function ProductDetail({ onAddToCart }) {
   ];
 
   const normalPrice = Number(product.price) || 1200;
-  const discountPrice =
-    Number(product.discountedPrice) || normalPrice;
+  const discountPrice = Number(product.discountedPrice) || normalPrice;
 
   let unitPrice = normalPrice;
 
@@ -83,9 +90,7 @@ function ProductDetail({ onAddToCart }) {
   }
 
   function decreaseQuantity() {
-    setQuantity((oldQuantity) =>
-      Math.max(1, oldQuantity - 1)
-    );
+    setQuantity((oldQuantity) => Math.max(1, oldQuantity - 1));
   }
 
   function handleAddToCart() {
@@ -96,11 +101,7 @@ function ProductDetail({ onAddToCart }) {
       price: unitPrice,
     };
 
-    onAddToCart(
-      cartProduct,
-      quantity,
-      selectedVariant
-    );
+    onAddToCart(cartProduct, quantity, selectedVariant);
 
     navigate("/cart");
   }
@@ -109,13 +110,9 @@ function ProductDetail({ onAddToCart }) {
     <div className="product-detail-page">
       <div className="detail-container">
 
-    
-        
-
         <div className="detail-main-grid">
 
           <div className="gallery-section">
-
             <div className="main-image-box">
               <img
                 src={images[selectedImage]}
@@ -128,33 +125,20 @@ function ProductDetail({ onAddToCart }) {
                 <button
                   key={index}
                   type="button"
-                  className={
-                    selectedImage === index
-                      ? "thumb-item active"
-                      : "thumb-item"
-                  }
+                  className={selectedImage === index ? "thumb-item active" : "thumb-item"}
                   onClick={() => setSelectedImage(index)}
                 >
-                  <img
-                    src={image}
-                    alt="Mahsulot"
-                  />
+                  <img src={image} alt="Mahsulot" />
                 </button>
               ))}
             </div>
-
           </div>
 
           <div className="info-section">
 
             <div className="badge-row">
-              <span className="badge-new">
-                Yangi mahsulot
-              </span>
-
-              <span className="product-id">
-                ID: {product.slug || product.id}
-              </span>
+              <span className="badge-new">Yangi mahsulot</span>
+              <span className="product-id">ID: {product.slug || product.id}</span>
             </div>
 
             <h1 className="product-title">
@@ -163,10 +147,7 @@ function ProductDetail({ onAddToCart }) {
 
             <div className="rating-row">
               <div className="rating">
-                <Star
-                  size={17}
-                  fill="currentColor"
-                />
+                <Star size={17} fill="currentColor" />
                 <span>4.8</span>
               </div>
 
@@ -181,11 +162,7 @@ function ProductDetail({ onAddToCart }) {
 
                 <div className="moq-badge">
                   <Package size={16} />
-
-                  <span>
-                    MOQ:{" "}
-                    {product.minOrderQuantity || 2} dona
-                  </span>
+                  <span>MOQ: {product.minOrderQuantity || 2} dona</span>
                 </div>
               </div>
 
@@ -193,17 +170,10 @@ function ProductDetail({ onAddToCart }) {
 
                 <button
                   type="button"
-                  className={
-                    quantity <= 10
-                      ? "price-card active"
-                      : "price-card"
-                  }
+                  className={quantity <= 10 ? "price-card active" : "price-card"}
                   onClick={() => setQuantity(1)}
                 >
-                  <span className="price-range">
-                    1 - 10 dona
-                  </span>
-
+                  <span className="price-range">1 - 10 dona</span>
                   <strong className="price-value">
                     ${normalPrice.toFixed(2)}
                   </strong>
@@ -218,27 +188,20 @@ function ProductDetail({ onAddToCart }) {
                   }
                   onClick={() => setQuantity(11)}
                 >
-                  <span className="popular-badge">
-                    OMMABOP
-                  </span>
-
-                  <span className="price-range">
-                    11 - 50 dona
-                  </span>
-
+                  <span className="popular-badge">OMMABOP</span>
+                  <span className="price-range">11 - 50 dona</span>
                   <strong className="price-value">
                     ${discountPrice.toFixed(2)}
                   </strong>
                 </button>
 
-                <button type="button" className={quantity >= 51 ? "price-card active" : "price-card"} onClick={() => setQuantity(51)}>
-                  <span className="price-range">
-                    51+ dona
-                  </span>
-
-                  <strong className="price-value">
-                    $890.00
-                  </strong>
+                <button
+                  type="button"
+                  className={quantity >= 51 ? "price-card active" : "price-card"}
+                  onClick={() => setQuantity(51)}
+                >
+                  <span className="price-range">51+ dona</span>
+                  <strong className="price-value">$890.00</strong>
                 </button>
 
               </div>
@@ -260,9 +223,7 @@ function ProductDetail({ onAddToCart }) {
                         ? "variant-btn active"
                         : "variant-btn"
                     }
-                    onClick={() =>
-                      setSelectedVariant(variant)
-                    }
+                    onClick={() => setSelectedVariant(variant)}
                   >
                     {variant}
                   </button>
@@ -288,12 +249,10 @@ function ProductDetail({ onAddToCart }) {
 
                 <div>
                   <h4>
-                    {product.seller?.name ||
-                      "UzTech Electronics"}
+                    {product.seller?.name || "UzTech Electronics"}
                   </h4>
 
                   <div className="seller-tags">
-
                     <span>
                       <BadgeCheck size={15} />
                       TASDIQLANGAN
@@ -303,16 +262,12 @@ function ProductDetail({ onAddToCart }) {
                       <MapPin size={15} />
                       Toshkent, UZ
                     </span>
-
                   </div>
                 </div>
 
               </div>
 
-              <button
-                type="button"
-                className="store-btn"
-              >
+              <button type="button" className="store-btn">
                 Do'konni ko'rish
               </button>
 
@@ -326,33 +281,22 @@ function ProductDetail({ onAddToCart }) {
           <div className="tabs-header">
 
             <button
-              className={
-                activeTab === "description"
-                  ? "tab-btn active"
-                  : "tab-btn"
-              }
-              onClick={() =>
-                setActiveTab("description")
-              }
+              className={activeTab === "description" ? "tab-btn active" : "tab-btn"}
+              onClick={() => setActiveTab("description")}
             >
               Tavsif
             </button>
 
-            <button className={activeTab === "delivery" ? "tab-btn active" : "tab-btn"} onClick={() => setActiveTab("delivery")
-            }
+            <button
+              className={activeTab === "delivery" ? "tab-btn active" : "tab-btn"}
+              onClick={() => setActiveTab("delivery")}
             >
               Yetkazib berish
             </button>
 
             <button
-              className={
-                activeTab === "reviews"
-                  ? "tab-btn active"
-                  : "tab-btn"
-              }
-              onClick={() =>
-                setActiveTab("reviews")
-              }
+              className={activeTab === "reviews" ? "tab-btn active" : "tab-btn"}
+              onClick={() => setActiveTab("reviews")}
             >
               Sharhlar (124)
             </button>
@@ -365,10 +309,7 @@ function ProductDetail({ onAddToCart }) {
               <div className="description-layout">
 
                 <div>
-                  <h3>
-                    Mahsulot haqida
-                  </h3>
-
+                  <h3>Mahsulot haqida</h3>
                   <p>
                     {product.description ||
                       "Yuqori sifatli va ishonchli mahsulot."}
@@ -382,14 +323,8 @@ function ProductDetail({ onAddToCart }) {
                     <Truck size={24} />
 
                     <div>
-                      <strong>
-                        Tezkor yetkazib berish
-                      </strong>
-
-                      <p>
-                        Toshkent bo'ylab
-                        24 soat ichida.
-                      </p>
+                      <strong>Tezkor yetkazib berish</strong>
+                      <p>Toshkent bo'ylab 24 soat ichida.</p>
                     </div>
                   </div>
                 </div>
@@ -399,40 +334,28 @@ function ProductDetail({ onAddToCart }) {
 
             {activeTab === "delivery" && (
               <div className="tab-simple-text">
-
                 <Truck size={27} />
 
                 <div>
-                  <h3>
-                    Yetkazib berish
-                  </h3>
-
+                  <h3>Yetkazib berish</h3>
                   <p>
                     Toshkent bo'ylab 24 soatda,
                     viloyatlarga 2-5 ish kunida.
                   </p>
                 </div>
-
               </div>
             )}
 
             {activeTab === "reviews" && (
               <div className="tab-simple-text">
-
-                <Star
-                  size={28}
-                  fill="currentColor"
-                />
+                <Star size={28} fill="currentColor" />
 
                 <div>
                   <h3>4.8 / 5</h3>
-
                   <p>
-                    Xaridorlar mahsulotni
-                    yaxshi baholagan.
+                    Xaridorlar mahsulotni yaxshi baholagan.
                   </p>
                 </div>
-
               </div>
             )}
 
@@ -442,10 +365,7 @@ function ProductDetail({ onAddToCart }) {
         <div className="bottom-bar-panel">
 
           <div className="summary-price">
-
-            <span className="total-title">
-              Umumiy narx
-            </span>
+            <span className="total-title">Umumiy narx</span>
 
             <strong className="total-price">
               ${totalPrice.toFixed(2)}
@@ -454,26 +374,17 @@ function ProductDetail({ onAddToCart }) {
             <small className="unit-price">
               1 dona: ${unitPrice.toFixed(2)}
             </small>
-
           </div>
 
           <div className="counter-controls">
 
-            <button
-              type="button"
-              onClick={decreaseQuantity}
-            >
+            <button type="button" onClick={decreaseQuantity}>
               <Minus size={18} />
             </button>
 
-            <span>
-              {quantity}
-            </span>
+            <span>{quantity}</span>
 
-            <button
-              type="button"
-              onClick={increaseQuantity}
-            >
+            <button type="button" onClick={increaseQuantity}>
               <Plus size={18} />
             </button>
 

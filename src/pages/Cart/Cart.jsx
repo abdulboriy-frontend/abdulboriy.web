@@ -1,12 +1,7 @@
 import { Link } from "react-router-dom";
 import "./Cart.css";
 
-function Cart({
-  cartItems,
-  increaseCartItem,
-  decreaseCartItem,
-  removeCartItem,
-}) {
+function Cart({ cartItems, increaseCartItem, decreaseCartItem, removeCartItem }) {
   const subtotal = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
     0
@@ -23,10 +18,7 @@ function Cart({
 
           <div className="empty-cart">
             <h2>Cart is empty</h2>
-
-            <Link to="/">
-              Back to Shop
-            </Link>
+            <Link to="/">Back to Shop</Link>
           </div>
         </div>
       </div>
@@ -47,78 +39,39 @@ function Cart({
         </div>
 
         {cartItems.map((item) => (
-          <div
-            className="cart-item"
-            key={`${item.id}-${item.variant}`}
-          >
+          <div className="cart-item" key={`${item.id}-${item.variant}`}>
             <div className="product">
               <div className="image-box">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                />
+                <img src={item.image} alt={item.name} />
               </div>
 
               <div>
                 <h3>{item.name}</h3>
-
-                <p>
-                  Product ID: {item.id}
-                </p>
+                <p>Product ID: {item.id}</p>
               </div>
             </div>
 
-            <div className="size">
-              {item.variant}
-            </div>
+            <div className="size">{item.variant}</div>
 
             <div className="quantity">
-              <button
-                onClick={() =>
-                  decreaseCartItem(
-                    item.id,
-                    item.variant
-                  )
-                }
-              >
+              <button onClick={() => decreaseCartItem(item.id, item.variant)}>
                 −
               </button>
 
-              <span>
-                {String(item.quantity).padStart(
-                  2,
-                  "0"
-                )}
-              </span>
+              <span>{String(item.quantity).padStart(2, "0")}</span>
 
-              <button
-                onClick={() =>
-                  increaseCartItem(
-                    item.id,
-                    item.variant
-                  )
-                }
-              >
+              <button onClick={() => increaseCartItem(item.id, item.variant)}>
                 +
               </button>
             </div>
 
             <b className="price">
-              $
-              {(
-                item.price *
-                item.quantity
-              ).toFixed(2)}
+              ${(item.price * item.quantity).toFixed(2)}
             </b>
 
             <button
               className="remove"
-              onClick={() =>
-                removeCartItem(
-                  item.id,
-                  item.variant
-                )
-              }
+              onClick={() => removeCartItem(item.id, item.variant)}
             >
               ×
             </button>
@@ -134,36 +87,26 @@ function Cart({
 
             <div>
               <span>Delivery</span>
-
-              <b>
-                ${delivery.toFixed(2)}
-              </b>
+              <b>${delivery.toFixed(2)}</b>
             </div>
           </div>
 
           <div className="summary-card">
             <div>
               <span>Subtotal</span>
-
-              <b>
-                ${subtotal.toFixed(2)}
-              </b>
+              <b>${subtotal.toFixed(2)}</b>
             </div>
 
             <div>
               <span>Total</span>
-
-              <b>
-                ${total.toFixed(2)}
-              </b>
+              <b>${total.toFixed(2)}</b>
             </div>
           </div>
         </div>
 
         <div className="promo">
           <label>
-            If you have a promotion code,
-            please enter it here
+            If you have a promotion code, please enter it here
           </label>
 
           <div>
@@ -172,17 +115,12 @@ function Cart({
               placeholder="Please enter promo code"
             />
 
-            <button>
-              Apply Discount
-            </button>
+            <button>Apply Discount</button>
           </div>
         </div>
 
         <div className="bottom-buttons">
-          <Link
-            to="/"
-            className="back"
-          >
+          <Link to="/" className="back">
             Back to Shop
           </Link>
 

@@ -1,6 +1,7 @@
 import "./App.css";
 import { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
+import axios from "axios";
 
 import Navbar from "./Ui/navbar/navbar";
 import Hero from "./Ui/hero/hero";
@@ -24,6 +25,7 @@ function Home() {
 }
 
 function App() {
+  
   const [cartItems, setCartItems] = useState(() => {
     const savedCart = localStorage.getItem("minibaba-cart");
 
@@ -31,8 +33,7 @@ function App() {
       try {
         return JSON.parse(savedCart);
       } catch (error) {
-        console.error("Cart data parse error:", error);
-        return [];
+        console.error("Cart xatosi:", error);
       }
     }
 
@@ -40,34 +41,58 @@ function App() {
   });
 
   useEffect(() => {
-    localStorage.setItem("minibaba-cart", JSON.stringify(cartItems));
+    const getTodos = async () => {
+      try {
+        const response = await axios.get(
+          "https://jsonplaceholder.typicode.com/todos?_limit=3"
+        );
+
+        console.log( response.data);
+      } catch (error) {
+        console.error( error);
+      }
+    };
+
+    getTodos();
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "minibaba-cart",
+      JSON.stringify(cartItems)
+    );
   }, [cartItems]);
 
-  
   function handleAddToCart(product, quantity, variant) {
     setCartItems((oldItems) => {
       const existingItem = oldItems.find(
-        (item) => item.id === product.id && item.variant === variant
+        (item) =>
+          item.id === product.id &&
+          item.variant === variant
       );
 
-  
       if (existingItem) {
-        return oldItems.map((item) => {
-          if (item.id === product.id && item.variant === variant) {
-            return {
+        return oldItems.map((item) =>
+          item.id === product.id &&
+            item.variant === variant
+            ? {
               ...item,
               quantity: item.quantity + quantity,
-            };
-          }
-          return item;
-        });
+            }
+            : item
+        );
       }
 
-    
       const newItem = {
         id: product.id,
-        name: product.name || product.title || "Nomsiz mahsulot",
-        image: product.image || product.imageUrl || "",
+        name:
+          product.name ||
+          product.title ||
+          "Nomsiz mahsulot",
+        image:
+          product.image ||
+          product.imageUrl ||
+          "",
         price: Number(product.price) || 0,
         quantity: quantity,
         variant: variant,
@@ -77,30 +102,35 @@ function App() {
     });
   }
 
-
+  // Mahsulot sonini oshirish
   function increaseCartItem(id, variant) {
     setCartItems((oldItems) =>
-      oldItems.map((item) => {
-        if (item.id === id && item.variant === variant) {
-          return { ...item, quantity: item.quantity + 1 };
-        }
-        return item;
-      })
+      oldItems.map((item) =>
+        item.id === id &&
+          item.variant === variant
+          ? {
+            ...item,
+            quantity: item.quantity + 1,
+          }
+          : item
+      )
     );
   }
 
-
   function decreaseCartItem(id, variant) {
     setCartItems((oldItems) =>
-      oldItems.map((item) => {
-        if (item.id === id && item.variant === variant) {
-          return {
+      oldItems.map((item) =>
+        item.id === id &&
+          item.variant === variant
+          ? {
             ...item,
-            quantity: Math.max(1, item.quantity - 1),
-          };
-        }
-        return item;
-      })
+            quantity: Math.max(
+              1,
+              item.quantity - 1
+            ),
+          }
+          : item
+      )
     );
   }
 
@@ -108,14 +138,19 @@ function App() {
   function removeCartItem(id, variant) {
     setCartItems((oldItems) =>
       oldItems.filter(
-        (item) => !(item.id === id && item.variant === variant)
+        (item) =>
+          !(
+            item.id === id &&
+            item.variant === variant
+          )
       )
     );
   }
 
  
   const cartCount = cartItems.reduce(
-    (total, item) => total + item.quantity,
+    (total, item) =>
+      total + item.quantity,
     0
   );
 
@@ -123,29 +158,15 @@ function App() {
     <>
       <Navbar cartCount={cartCount} />
 
-      <Routes>
-        <Route path="/" element={<Home />} />
+      <Routes> <Route path="/"element={<Home />} />
+ 
         <Route path="/login" element={<Login />} />
 
-        <Route
-          path="/product/:slug"
-          element={<ProductDetail onAddToCart={handleAddToCart} />}
-        />
+        <Route  path="/product/:slug"  element={ <ProductDetail   onAddToCart={handleAddToCart} /> }/>
 
-        <Route
-          path="/cart"
-          element={
-            <Cart
-              cartItems={cartItems}
-              increaseCartItem={increaseCartItem}
-              decreaseCartItem={decreaseCartItem}
-              removeCartItem={removeCartItem}
-            />
-          }
-        />
+        <Route path="/cart" element={<Cart cartItems={cartItems} increaseCartItem={increaseCartItem} decreaseCartItem={decreaseCartItem} removeCartItem={removeCartItem} />} />
 
-        <Route path="/seller/:slug" element={<SellerCard />} />
-      </Routes>
+        <Route path="/seller/:slug" element={<SellerCard />} /> </Routes>
 
       <Footer />
     </>

@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+
 import Card from "../card/card";
 import "./ProductCard.css";
 
@@ -10,8 +12,11 @@ function ProductCard() {
   useEffect(() => {
     const yuklash = async () => {
       try {
-        const javob = await fetch("https://uzum-api.onrender.com/api/products");
-        const json = await javob.json();
+        const javob = await axios.get(
+          "https://uzum-api.onrender.com/api/products"
+        );
+
+        const json = javob.data;
 
         console.log(json.data);
 
@@ -19,7 +24,7 @@ function ProductCard() {
           setMalumotlar(json.data);
         }
       } catch (xatolik) {
-        console.error(xatolik);
+        console.error("Axios xatosi:", xatolik);
       } finally {
         setLoading(false);
       }
@@ -29,14 +34,21 @@ function ProductCard() {
   }, []);
 
   if (loading) {
-    return <div className="loading">yuklanamoqda</div>;
+    return (
+      <div className="loading">
+        Yuklanmoqda...
+      </div>
+    );
   }
 
   return (
     <div className="konteyner">
       <div className="tepa-qism">
         <h1>Top mahsulotlar</h1>
-        <a href="#">Hammasini ko'rish</a>
+
+        <a href="#">
+          Hammasini ko'rish
+        </a>
       </div>
 
       <div className="panjara">
@@ -44,7 +56,6 @@ function ProductCard() {
           <Link
             key={buyum.id}
             to={`/product/${buyum.slug || buyum.id}`}
-           
           >
             <Card
               rasm={buyum.imageUrl}
@@ -52,11 +63,13 @@ function ProductCard() {
               narxi={`${buyum.discountedPrice?.toLocaleString()} ${
                 buyum.currency || "UZS"
               }`}
-              buyurtma={`Minimal buyurtma: ${buyum.minOrderQuantity}`}
+              buyurtma={`Minimal buyurtma: ${
+                buyum.minOrderQuantity
+              }`}
               holat={
                 buyum.isVerifiedSeller
                   ? "Tasdiqlangan Sotuvchi"
-                    : "Oddiy Sotuvchi"
+                  : "Oddiy Sotuvchi"
               }
               chegirma={
                 buyum.discountPercent > 0
