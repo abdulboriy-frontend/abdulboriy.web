@@ -32,9 +32,7 @@ function ProductDetail({ onAddToCart }) {
   useEffect(() => {
     const getProduct = async () => {
       try {
-        const response = await axios.get(
-          "https://uzum-api.onrender.com/api/products"
-        );
+        const response = await axios.get("https://uzum-api.onrender.com/api/products");
 
         const result = response.data;
 
@@ -57,10 +55,8 @@ function ProductDetail({ onAddToCart }) {
     return <div className="loading">Yuklanmoqda...</div>;
   }
 
-  const images =
-    product.images?.length > 0
-      ? product.images
-      : [product.imageUrl || "https://via.placeholder.com/600"];
+  const images = product.images?.length > 0 ? product.images
+    : [product.imageUrl || "https://via.placeholder.com/600"];
 
   const variants = [
     "Standard",
@@ -103,7 +99,7 @@ function ProductDetail({ onAddToCart }) {
 
     onAddToCart(cartProduct, quantity, selectedVariant);
 
-    navigate("/cart");
+    navigate("");
   }
 
   return (
@@ -215,14 +211,10 @@ function ProductDetail({ onAddToCart }) {
 
               <div className="variant-buttons">
                 {variants.map((variant) => (
-                  <button
-                    key={variant}
-                    type="button"
-                    className={
-                      selectedVariant === variant
-                        ? "variant-btn active"
-                        : "variant-btn"
-                    }
+                  <button key={variant} type="button" className={selectedVariant === variant
+                    ? "variant-btn active"
+                    : "variant-btn"
+                  }
                     onClick={() => setSelectedVariant(variant)}
                   >
                     {variant}
@@ -404,7 +396,7 @@ function ProductDetail({ onAddToCart }) {
 
             <button
               className="btn-cart"
-              onClick={handleAddToCart}
+    onClick={handleAddToCart}
             >
               <ShoppingCart size={18} />
               Savatga qo'shish

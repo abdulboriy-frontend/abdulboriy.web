@@ -10,11 +10,8 @@ function Navbar({ cartCount }) {
 
     <div className="logo">
   <Link to="/">
-    <img
-      src={Background}
-      alt="Logo"
-      className="logo-img"
-    />  
+    <img src={Background} alt="Logo"className="logo-img"/> 
+     
   </Link>
 <h2>Minibaba</h2>
 </div>

@@ -44,13 +44,7 @@ export default function Login() {
           <div className="input-wrapper">
             <span className="country-code">+998</span>
 
-            <input
-              type="text"
-              placeholder="90 123 45 67"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              required
-            />
+<input type="text" placeholder="90 123 45 67"value={phone}onChange={(e) => setPhone(e.target.value)}   required />
           </div>
 
           <span className="input-hint">

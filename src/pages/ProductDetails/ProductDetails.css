@@ -500,7 +500,6 @@
 
 
 .bottom-bar-panel {
-  position: sticky;
   bottom: 10px;
   z-index: 20;
 
