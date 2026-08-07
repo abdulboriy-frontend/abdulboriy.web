@@ -33,7 +33,7 @@ function App() {
       try {
         return JSON.parse(savedCart);
       } catch (error) {
-        console.error("Cart xatosi:", error);
+        console.error( error);
       }
     }
 
@@ -102,7 +102,6 @@ function App() {
     });
   }
 
-  // Mahsulot sonini oshirish
   function increaseCartItem(id, variant) {
     setCartItems((oldItems) =>
       oldItems.map((item) =>

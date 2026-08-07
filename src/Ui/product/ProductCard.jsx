@@ -70,30 +70,13 @@ function ProductCard() {
           1200: {
             slidesPerView: 5,
           },
-         
+
         }}
       >
         {malumotlar.map((buyum) => (
           <SwiperSlide key={buyum.id}>
             <Link to={`/product/${buyum.slug || buyum.id}`}>
-              <Card
-                rasm={buyum.imageUrl}
-                nomi={buyum.name}
-                narxi={`${buyum.discountedPrice?.toLocaleString()} ${
-                  buyum.currency || "UZS"
-                }`}
-                buyurtma={`Minimal buyurtma: ${buyum.minOrderQuantity}`}
-                holat={
-                  buyum.isVerifiedSeller
-                    ? "Tasdiqlangan Sotuvchi"
-                    : "Oddiy Sotuvchi"
-                }
-                chegirma={
-                  buyum.discountPercent > 0
-                    ? `-${buyum.discountPercent}%`
-                    : null
-                }
-              />
+              <Card rasm={buyum.imageUrl} nomi={buyum.name} narxi={buyum.discountedPrice + " " + (buyum.currency || "UZS")} buyurtma={"Minimal buyurtma: " + buyum.minOrderQuantity} holat={buyum.isVerifiedSeller ? "Tasdiqlangan Sotuvchi" : "Oddiy Sotuvchi"} chegirma={buyum.discountPercent ? "-" + buyum.discountPercent + "%" : ""} />
             </Link>
           </SwiperSlide>
         ))}

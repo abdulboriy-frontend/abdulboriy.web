@@ -65,14 +65,9 @@ function Cart({ cartItems, increaseCartItem, decreaseCartItem, removeCartItem })
               </button>
             </div>
 
-            <b className="price">
-              ${(item.price * item.quantity).toFixed(2)}
-            </b>
+            <b className="price">  ${(item.price * item.quantity).toFixed(2)}</b>
 
-            <button
-              className="remove"
-              onClick={() => removeCartItem(item.id, item.variant)}
-            >
+            <button className="remove" onClick={() => removeCartItem(item.id, item.variant)} >
               ×
             </button>
           </div>
@@ -110,10 +105,7 @@ function Cart({ cartItems, increaseCartItem, decreaseCartItem, removeCartItem })
           </label>
 
           <div>
-            <input
-              type="text"
-              placeholder="Please enter promo code"
-            />
+            <input   type="text" placeholder="Please enter promo code"   />
 
             <button>Apply Discount</button>
           </div>

@@ -234,8 +234,12 @@
   border-color: #cbd5e1;
 }
 
-.text-google { color: #ea4335; }
-.text-facebook { color: #1877f2; }
+.text-google {
+   color: #ea4335;
+   }
+.text-facebook { 
+  color: #1877f2;
+ }
 
 .terms-text {
   font-size: 11px;

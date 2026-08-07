@@ -137,12 +137,7 @@ const Seller = () => {
                 </div>
               </div>
 
-              <button
-                className="btn-link"
-                onClick={() =>
-                  navigate(`/seller/${seller.slug}`)
-                }
-              >
+              <button className="btn-link" onClick={() =>   navigate(`/seller/${seller.slug}`) }  >
                 Sotuvchi sahifasi
                 <ArrowRight size={18} />
               </button>

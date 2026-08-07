@@ -17,15 +17,6 @@ function Navbar({ cartCount }) {
   const [lang, setLang] = useState("O'zbekcha");
   const [isLangOpen, setIsLangOpen] = useState(false);
 
-  const languages = ["O'zbekcha", "Русский", "English"];
-
-  function getLangClass(item) {
-    if (item === lang) {
-      return "lang-item active";
-    }
-    return "lang-item";
-  }
-
   return (
     <>
       <nav className="navbar">
@@ -49,30 +40,22 @@ function Navbar({ cartCount }) {
 
         <div className="menu">
           <div className="lang-dropdown">
-            <div
-              className="lang-box"
-              onClick={() => setIsLangOpen(!isLangOpen)}
-            >
+            <div className="lang-box" onClick={() => setIsLangOpen(!isLangOpen)}  >
               <Languages size={18} />
               <span>{lang}</span>
             </div>
 
             {isLangOpen && (
               <div className="lang-menu">
-                {languages.map((item) => (
-                  <div
-                    key={item}
-                    className={getLangClass(item)}
-                    onClick={() => {
-                      setLang(item);
-                      setIsLangOpen(false);
-                    }}
-                  >
-                    {item}
-                  </div>
-                ))}
+        <div className="lang-item" onClick={() => { setLang("O'zbekcha"); setIsLangOpen(false); }}  >  O'zbekcha </div>
+            
+       <div className="lang-item" onClick={() => { setLang("Русский"); setIsLangOpen(false); }} > Русский</div>
+
+       <div className="lang-item" onClick={() => { setLang("English"); setIsLangOpen(false); }}>   English </div>
+
               </div>
             )}
+
           </div>
 
           <Link to="/login" className="icon-btn">
@@ -94,18 +77,20 @@ function Navbar({ cartCount }) {
         <button className="hamburger" onClick={() => setOpen(true)}>
           <Menu size={28} />
         </button>
-      </nav>
-
-      {open && (
+      </nav>      {open && (
         <div className="mobile-modal" onClick={() => setOpen(false)}>
-          <div className="mobile-menu" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="mobile-menu"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="mobile-header">
+
               <Link to="/" className="logo" onClick={() => setOpen(false)}>
                 <img src={Background} alt="Logo" className="logo-img" />
                 <h2>Minibaba</h2>
               </Link>
 
-              <button className="close-btn" onClick={() => setOpen(false)}>
+              <button className="close-btn" onClick={() => setOpen(false)} >
                 <X size={26} />
               </button>
             </div>
@@ -116,7 +101,9 @@ function Navbar({ cartCount }) {
               <div className="mobile-search-box">
                 <Search className="search-icon" />
                 <input type="text" placeholder="Mahsulotlarni qidiring..." />
-                <button className="mobile-search-btn">Qidirish</button>
+                <button className="mobile-search-btn">
+                  Qidirish
+                </button>
               </div>
             </div>
 
@@ -132,42 +119,35 @@ function Navbar({ cartCount }) {
 
                 {isLangOpen && (
                   <div className="lang-menu">
-                    {languages.map((item) => (
-                      <div
-                        key={item}
-                        className={getLangClass(item)}
-                        onClick={() => {
-                          setLang(item);
-                          setIsLangOpen(false);
-                        }}
-                      >
-                        {item}
-                      </div>
-                    ))}
+         <div  className="lang-item"   onClick={() => {  setLang("O'zbekcha");setIsLangOpen(false);  }}  >
+                      O'zbekcha
+                    </div>
+
+    <div  className="lang-item" onClick={() => {   setLang("Русский");   setIsLangOpen(false); }}   >
+                      Русский
+                    </div>
+
+   <div className="lang-item" onClick={() => {  setLang("English");  setIsLangOpen(false);}} >
+                      English
+                    </div>
                   </div>
                 )}
               </div>
 
               <div className="mobile-icons">
-                <Link
-                  to="/cart"
-                  className="icon-btn"
-                  onClick={() => setOpen(false)}
-                >
+                <Link to="/cart" className="icon-btn" onClick={() => setOpen(false)} >
                   <div className="cart-icon-wrapper">
                     <ShoppingCart className="nav-icon" />
                     {cartCount > 0 && (
-                      <span className="cart-badge">{cartCount}</span>
+                      <span className="cart-badge">
+                        {cartCount}
+                      </span>
                     )}
                   </div>
                   <span>Savat</span>
                 </Link>
 
-                <Link
-                  to="/login"
-                  className="icon-btn"
-                  onClick={() => setOpen(false)}
-                >
+                <Link to="/login" className="icon-btn" onClick={() => setOpen(false)}>
                   <User className="nav-icon" />
                   <span>Kirish</span>
                 </Link>

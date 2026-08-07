@@ -22,7 +22,6 @@ body {
   width: 100%;
   background: #fff;
   border-bottom: 1px solid #ececec;
-  
 }
 
 .navbar {
@@ -320,11 +319,7 @@ body {
   cursor: pointer;
 }
 
-.lang-item.active {
-  background: #fff5ed;
-  color: #ff7a00;
-  font-weight: 600;
-}
+
 
 .mobile-icons {
   display: flex;
