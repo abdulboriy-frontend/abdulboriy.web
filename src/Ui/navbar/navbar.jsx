@@ -1,89 +1,182 @@
-import React from "react";
+import React, { useState } from "react";
 import "./navbar.css";
 import { Link } from "react-router-dom";
-import { User, ShoppingCart, Search, Camera } from "lucide-react";
+import {
+  User,
+  ShoppingCart,
+  Search,
+  Camera,
+  Menu,
+  X,
+  Languages,
+} from "lucide-react";
 import Background from "../../assets/Background.png";
 
 function Navbar({ cartCount }) {
+  const [open, setOpen] = useState(false);
+  const [lang, setLang] = useState("O'zbekcha");
+  const [isLangOpen, setIsLangOpen] = useState(false);
+
+  const languages = ["O'zbekcha", "Русский", "English"];
+
+  function getLangClass(item) {
+    if (item === lang) {
+      return "lang-item active";
+    }
+    return "lang-item";
+  }
+
   return (
-    <nav className="navbar">
-
-    <div className="logo">
-  <Link to="/">
-    <img src={Background} alt="Logo"className="logo-img"/> 
-     
-  </Link>
-<h2>Minibaba</h2>
-</div>
-
-      <div className="search-wrapper">
-
-        <div className="search-container">
-
-          <Search className="search-icon" />
-
-          <input
-            type="text"
-            placeholder="Mahsulot yoki sotuvchini qidiring..."
-          />
-
-          <Camera className="camera-icon" />
-
-        </div>
-
-        <button className="search-btn">
-          Qidirish
-        </button>
-
-      </div>
-
-      <div className="menu">
-
-        <a href="#" className="menu-link">
-          Kategoriyalar
-        </a>
-
-        <a href="#" className="menu-link">
-          Yordam
-        </a>
-
-        <Link
-          to="/login"
-          className="icon-btn"
-        >
-          <User className="nav-icon" />
-
-          <span>
-            Kirish
-          </span>
+    <>
+      <nav className="navbar">
+        <Link to="/" className="logo">
+          <img src={Background} alt="Logo" className="logo-img" />
+          <h2>Minibaba</h2>
         </Link>
 
-        <Link
-          to="/cart"
-          className="icon-btn cart-link"
-        >
-
-          <div className="cart-icon-wrapper">
-
-            <ShoppingCart className="nav-icon" />
-
-            {cartCount > 0 && (
-              <span className="cart-badge">
-                {cartCount}
-              </span>
-            )}
-
+        <div className="search-wrapper">
+          <div className="search-container">
+            <Search className="search-icon" />
+            <input
+              type="text"
+              placeholder="Mahsulot yoki sotuvchini qidiring..."
+            />
+            <Camera className="camera-icon" />
           </div>
 
-          <span>
-            Savat
-          </span>
+          <button className="search-btn">Qidirish</button>
+        </div>
 
-        </Link>
+        <div className="menu">
+          <div className="lang-dropdown">
+            <div
+              className="lang-box"
+              onClick={() => setIsLangOpen(!isLangOpen)}
+            >
+              <Languages size={18} />
+              <span>{lang}</span>
+            </div>
 
-      </div>
+            {isLangOpen && (
+              <div className="lang-menu">
+                {languages.map((item) => (
+                  <div
+                    key={item}
+                    className={getLangClass(item)}
+                    onClick={() => {
+                      setLang(item);
+                      setIsLangOpen(false);
+                    }}
+                  >
+                    {item}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
 
-    </nav>
+          <Link to="/login" className="icon-btn">
+            <User className="nav-icon" />
+            <span>Kirish</span>
+          </Link>
+
+          <Link to="/cart" className="icon-btn">
+            <div className="cart-icon-wrapper">
+              <ShoppingCart className="nav-icon" />
+              {cartCount > 0 && (
+                <span className="cart-badge">{cartCount}</span>
+              )}
+            </div>
+            <span>Savat</span>
+          </Link>
+        </div>
+
+        <button className="hamburger" onClick={() => setOpen(true)}>
+          <Menu size={28} />
+        </button>
+      </nav>
+
+      {open && (
+        <div className="mobile-modal" onClick={() => setOpen(false)}>
+          <div className="mobile-menu" onClick={(e) => e.stopPropagation()}>
+            <div className="mobile-header">
+              <Link to="/" className="logo" onClick={() => setOpen(false)}>
+                <img src={Background} alt="Logo" className="logo-img" />
+                <h2>Minibaba</h2>
+              </Link>
+
+              <button className="close-btn" onClick={() => setOpen(false)}>
+                <X size={26} />
+              </button>
+            </div>
+
+            <hr className="mobile-line" />
+
+            <div className="mobile-search">
+              <div className="mobile-search-box">
+                <Search className="search-icon" />
+                <input type="text" placeholder="Mahsulotlarni qidiring..." />
+                <button className="mobile-search-btn">Qidirish</button>
+              </div>
+            </div>
+
+            <div className="mobile-bottom">
+              <div className="lang-dropdown">
+                <div
+                  className="lang-box"
+                  onClick={() => setIsLangOpen(!isLangOpen)}
+                >
+                  <Languages size={18} />
+                  <span>{lang}</span>
+                </div>
+
+                {isLangOpen && (
+                  <div className="lang-menu">
+                    {languages.map((item) => (
+                      <div
+                        key={item}
+                        className={getLangClass(item)}
+                        onClick={() => {
+                          setLang(item);
+                          setIsLangOpen(false);
+                        }}
+                      >
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="mobile-icons">
+                <Link
+                  to="/cart"
+                  className="icon-btn"
+                  onClick={() => setOpen(false)}
+                >
+                  <div className="cart-icon-wrapper">
+                    <ShoppingCart className="nav-icon" />
+                    {cartCount > 0 && (
+                      <span className="cart-badge">{cartCount}</span>
+                    )}
+                  </div>
+                  <span>Savat</span>
+                </Link>
+
+                <Link
+                  to="/login"
+                  className="icon-btn"
+                  onClick={() => setOpen(false)}
+                >
+                  <User className="nav-icon" />
+                  <span>Kirish</span>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 

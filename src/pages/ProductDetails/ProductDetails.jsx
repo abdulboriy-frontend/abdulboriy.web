@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 
 import {
@@ -20,33 +20,29 @@ import "./ProductDetails.css";
 
 function ProductDetail({ onAddToCart }) {
   const { slug } = useParams();
-  const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
-  const [selectedVariant, setSelectedVariant] = useState("Pro-Max X1");
-  const [activeTab, setActiveTab] = useState("description");
-
 
   useEffect(() => {
-    const getProduct = async () => {
+    async function getProduct() {
       try {
-        const response = await axios.get("https://uzum-api.onrender.com/api/products");
+        const { data } = await axios.get(
+          "https://uzum-api.onrender.com/api/products"
+        );
 
-        const result = response.data;
+        if (!data.success) return;
 
-        if (!result.success) return;
-
-        const foundProduct = result.data.find(
+        const foundProduct = data.data.find(
           (item) => String(item.slug || item.id) === String(slug)
         );
 
         setProduct(foundProduct);
       } catch (error) {
-        console.error("Axios xatosi:", error);
+        console.log(error);
       }
-    };
+    }
 
     getProduct();
   }, [slug]);
@@ -55,8 +51,10 @@ function ProductDetail({ onAddToCart }) {
     return <div className="loading">Yuklanmoqda...</div>;
   }
 
-  const images = product.images?.length > 0 ? product.images
-    : [product.imageUrl || "https://via.placeholder.com/600"];
+  const images =
+    product.images?.length > 0
+      ? product.images
+      : [product.imageUrl || "https://via.placeholder.com/600"];
 
   const variants = [
     "Standard",
@@ -82,32 +80,33 @@ function ProductDetail({ onAddToCart }) {
   const totalPrice = unitPrice * quantity;
 
   function increaseQuantity() {
-    setQuantity((oldQuantity) => oldQuantity + 1);
+    setQuantity((old) => old + 1);
   }
 
   function decreaseQuantity() {
-    setQuantity((oldQuantity) => Math.max(1, oldQuantity - 1));
+    setQuantity((old) => Math.max(1, old - 1));
   }
 
   function handleAddToCart() {
     const cartProduct = {
       id: product.id,
-      name: product.name || product.title || "Nomsiz mahsulot",
-      image: product.imageUrl || images[0] || "",
+      name: product.name || product.title,
+      image: product.imageUrl || images[0],
       price: unitPrice,
     };
 
-    onAddToCart(cartProduct, quantity, selectedVariant);
+    if (typeof onAddToCart === "function") {
+      onAddToCart(cartProduct, quantity, "Pro-Max X1");
+    }
 
-    navigate("");
+    alert("Mahsulot savatga qo'shildi!");
   }
 
   return (
     <div className="product-detail-page">
       <div className="detail-container">
-
         <div className="detail-main-grid">
-
+          {/* Rasm galereyasi */}
           <div className="gallery-section">
             <div className="main-image-box">
               <img
@@ -121,7 +120,11 @@ function ProductDetail({ onAddToCart }) {
                 <button
                   key={index}
                   type="button"
-                  className={selectedImage === index ? "thumb-item active" : "thumb-item"}
+                  className={
+                    selectedImage === index
+                      ? "thumb-item active"
+                      : "thumb-item"
+                  }
                   onClick={() => setSelectedImage(index)}
                 >
                   <img src={image} alt="Mahsulot" />
@@ -130,11 +133,13 @@ function ProductDetail({ onAddToCart }) {
             </div>
           </div>
 
+          {/* Mahsulot ma'lumotlari */}
           <div className="info-section">
-
             <div className="badge-row">
-              <span className="badge-new">Yangi mahsulot</span>
-              <span className="product-id">ID: {product.slug || product.id}</span>
+              <div className="badge-new">Yangi mahsulot</div>
+              <div className="product-id">
+                ID: {product.slug || product.id}
+              </div>
             </div>
 
             <h1 className="product-title">
@@ -144,90 +149,81 @@ function ProductDetail({ onAddToCart }) {
             <div className="rating-row">
               <div className="rating">
                 <Star size={17} fill="currentColor" />
-                <span>4.8</span>
+                <div>4.8</div>
               </div>
 
-              <span>124 ta sharh</span>
-              <span>500+ sotilgan</span>
+              <div>124 ta sharh</div>
+              <div>500+ sotilgan</div>
             </div>
 
             <div className="wholesale-box">
-
               <div className="wholesale-header">
                 <h3>Ulgurji narxlar</h3>
 
                 <div className="moq-badge">
                   <Package size={16} />
-                  <span>MOQ: {product.minOrderQuantity || 2} dona</span>
+                  <div>
+                    MOQ: {product.minOrderQuantity || 2} dona
+                  </div>
                 </div>
               </div>
 
               <div className="price-cards-grid">
-
-                <button
-                  type="button"
-                  className={quantity <= 10 ? "price-card active" : "price-card"}
-                  onClick={() => setQuantity(1)}
+                <div
+                  className={`price-card ${quantity <= 10 ? "active" : ""}`}
                 >
-                  <span className="price-range">1 - 10 dona</span>
-                  <strong className="price-value">
+                  <div className="price-range">1 - 10 dona</div>
+                  <div className="price-value">
                     ${normalPrice.toFixed(2)}
-                  </strong>
-                </button>
+                  </div>
+                </div>
 
-                <button
-                  type="button"
-                  className={
-                    quantity >= 11 && quantity <= 50
-                      ? "price-card active"
-                      : "price-card"
-                  }
-                  onClick={() => setQuantity(11)}
+                <div
+                  className={`price-card ${
+                    quantity >= 11 && quantity <= 50 ? "active" : ""
+                  }`}
                 >
-                  <span className="popular-badge">OMMABOP</span>
-                  <span className="price-range">11 - 50 dona</span>
-                  <strong className="price-value">
+                  <div className="popular-badge">OMMABOP</div>
+
+                  <div className="price-range">11 - 50 dona</div>
+
+                  <div className="price-value">
                     ${discountPrice.toFixed(2)}
-                  </strong>
-                </button>
+                  </div>
+                </div>
 
-                <button
-                  type="button"
-                  className={quantity >= 51 ? "price-card active" : "price-card"}
-                  onClick={() => setQuantity(51)}
+                <div
+                  className={`price-card ${quantity >= 51 ? "active" : ""}`}
                 >
-                  <span className="price-range">51+ dona</span>
-                  <strong className="price-value">$890.00</strong>
-                </button>
+                  <div className="price-range">51+ dona</div>
 
+                  <div className="price-value">$890.00</div>
+                </div>
               </div>
             </div>
 
             <div className="variant-section">
-
-              <h4 className="variant-title">
-                KONFIGURATSIYANI TANLANG
-              </h4>
+              <h4 className="variant-title">KONFIGURATSIYANI TANLANG</h4>
 
               <div className="variant-buttons">
                 {variants.map((variant) => (
-                  <button key={variant} type="button" className={selectedVariant === variant
-                    ? "variant-btn active"
-                    : "variant-btn"
-                  }
-                    onClick={() => setSelectedVariant(variant)}
+                  <div
+                    key={variant}
+                    className={
+                      variant === "Pro-Max X1"
+                        ? "variant-btn active"
+                        : "variant-btn"
+                    }
                   >
                     {variant}
-                  </button>
+                  </div>
                 ))}
               </div>
-
             </div>
 
+            {/* Sotuvchi kartochkasi */}
             <div className="seller-card">
-
               <div className="seller-info">
-
                 <div className="seller-logo">
                   {product.seller?.logoUrl ? (
                     <img
@@ -245,167 +241,86 @@ function ProductDetail({ onAddToCart }) {
                   </h4>
 
                   <div className="seller-tags">
-                    <span>
+                    <div className="seller-tag">
                       <BadgeCheck size={15} />
-                      TASDIQLANGAN
-                    </span>
+                      <div>TASDIQLANGAN</div>
+                    </div>
 
-                    <span>
+                    <div className="seller-tag">
                       <MapPin size={15} />
-                      Toshkent, UZ
-                    </span>
+                      <div>Toshkent, UZ</div>
+                    </div>
                   </div>
                 </div>
-
               </div>
 
-              <button type="button" className="store-btn">
-                Do'konni ko'rish
-              </button>
-
+              <div className="store-btn">Do'konni ko'rish</div>
             </div>
-
           </div>
         </div>
 
         <div className="tabs-container">
-
           <div className="tabs-header">
-
-            <button
-              className={activeTab === "description" ? "tab-btn active" : "tab-btn"}
-              onClick={() => setActiveTab("description")}
-            >
-              Tavsif
-            </button>
-
-            <button
-              className={activeTab === "delivery" ? "tab-btn active" : "tab-btn"}
-              onClick={() => setActiveTab("delivery")}
-            >
-              Yetkazib berish
-            </button>
-
-            <button
-              className={activeTab === "reviews" ? "tab-btn active" : "tab-btn"}
-              onClick={() => setActiveTab("reviews")}
-            >
-              Sharhlar (124)
-            </button>
-
+            <div className="tab-btn">Tavsif</div>
+            <div className="tab-btn active">Yetkazib berish</div>
+            <div className="tab-btn">Sharhlar (124)</div>
           </div>
 
           <div className="tab-content">
-
-            {activeTab === "description" && (
-              <div className="description-layout">
-
-                <div>
-                  <h3>Mahsulot haqida</h3>
-                  <p>
-                    {product.description ||
-                      "Yuqori sifatli va ishonchli mahsulot."}
-                  </p>
-                </div>
-
-                <div>
-                  <h3>Logistika</h3>
-
-                  <div className="logistics-item">
-                    <Truck size={24} />
-
-                    <div>
-                      <strong>Tezkor yetkazib berish</strong>
-                      <p>Toshkent bo'ylab 24 soat ichida.</p>
-                    </div>
-                  </div>
-                </div>
-
+            <div className="tab-simple-text">
+              <Truck size={27} />
+              <div>
+                <h3>Yetkazib berish</h3>
+                <p>
+                  Toshkent bo'ylab 24 soatda, viloyatlarga 2-5 ish kunida.
+                </p>
               </div>
-            )}
-
-            {activeTab === "delivery" && (
-              <div className="tab-simple-text">
-                <Truck size={27} />
-
-                <div>
-                  <h3>Yetkazib berish</h3>
-                  <p>
-                    Toshkent bo'ylab 24 soatda,
-                    viloyatlarga 2-5 ish kunida.
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {activeTab === "reviews" && (
-              <div className="tab-simple-text">
-                <Star size={28} fill="currentColor" />
-
-                <div>
-                  <h3>4.8 / 5</h3>
-                  <p>
-                    Xaridorlar mahsulotni yaxshi baholagan.
-                  </p>
-                </div>
-              </div>
-            )}
-
+            </div>
           </div>
         </div>
 
         <div className="bottom-bar-panel">
-
           <div className="summary-price">
-            <span className="total-title">Umumiy narx</span>
-
-            <strong className="total-price">
-              ${totalPrice.toFixed(2)}
-            </strong>
-
-            <small className="unit-price">
+            <div className="total-title">Umumiy narx</div>
+            <div className="total-price">${totalPrice.toFixed(2)}</div>
+            <div className="unit-price">
               1 dona: ${unitPrice.toFixed(2)}
-            </small>
+            </div>
           </div>
 
           <div className="counter-controls">
-
             <button type="button" onClick={decreaseQuantity}>
               <Minus size={18} />
             </button>
 
-            <span>{quantity}</span>
+            <div>{quantity}</div>
 
             <button type="button" onClick={increaseQuantity}>
               <Plus size={18} />
             </button>
-
           </div>
 
           <div className="action-buttons">
-
-            <button className="btn-chat">
+            <div className="btn-chat">
               <MessageCircle size={18} />
-              Chat orqali yozish
-            </button>
+              <div>Chat orqali yozish</div>
+            </div>
 
-            <button className="btn-rfq">
+            <div className="btn-rfq">
               <FileText size={18} />
-              RFQ
-            </button>
+              <div>RFQ</div>
+            </div>
 
             <button
+              type="button"
               className="btn-cart"
-    onClick={handleAddToCart}
+              onClick={handleAddToCart}
             >
               <ShoppingCart size={18} />
-              Savatga qo'shish
+              <div>Savatga qo'shish</div>
             </button>
-
           </div>
-
         </div>
-
       </div>
     </div>
   );

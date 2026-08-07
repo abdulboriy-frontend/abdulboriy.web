@@ -6,7 +6,6 @@
 
 .hero {
   width: 100%;
-  background: #fff;
   padding: 32px 125px; 
 }
 
@@ -153,6 +152,9 @@
   
   .hero-container {
     flex-direction: column;
+  }
+  .sidebar{
+    display: none;
   }
 
   .sidebar {
