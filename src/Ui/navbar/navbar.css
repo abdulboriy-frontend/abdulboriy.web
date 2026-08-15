@@ -5,6 +5,7 @@
 }
 
 body {
+  padding-top: 80px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   background-color: #fcfcfc;
   color: #111;
@@ -20,8 +21,6 @@ body {
 
 .navbar-wrapper {
   width: 100%;
-  background: #fff;
-  border-bottom: 1px solid #ececec;
 }
 
 .navbar {
@@ -29,7 +28,14 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  
+
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+
+  background: #fff;
 }
 
 .logo {
@@ -39,6 +45,11 @@ body {
   text-decoration: none;
   color: #111;
   margin-top: 12px;
+  transition: 0.2s;
+}
+
+.logo:hover {
+  color: #ff7a00;
 }
 
 .logo-img {
@@ -75,6 +86,11 @@ body {
   width: 20px;
   height: 20px;
   color: #888;
+  transition: 0.2s;
+}
+
+.search-container:focus-within .search-icon {
+  color: #ff7a00;
 }
 
 .search-container input {
@@ -92,6 +108,11 @@ body {
   height: 20px;
   color: #888;
   cursor: pointer;
+  transition: 0.2s;
+}
+
+.camera-icon:hover {
+  color: #ff7a00;
 }
 
 .search-btn {
@@ -103,11 +124,12 @@ body {
   color: #fff;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: 0.2s;
 }
 
 .search-btn:hover {
   background: #e66e00;
+  transform: translateY(-1px);
 }
 
 .menu {
@@ -131,6 +153,12 @@ body {
   text-decoration: none;
   color: #222;
   font-size: 12px;
+  transition: 0.2s;
+}
+
+.icon-btn:hover {
+  color: #ff7a00;
+  transform: translateY(-2px);
 }
 
 .nav-icon {
@@ -166,6 +194,12 @@ body {
   border: none;
   background: #fff;
   cursor: pointer;
+  transition: 0.2s;
+}
+
+.hamburger:hover {
+  color: #ff7a00;
+  border-color: #ff7a00;
 }
 
 .mobile-modal {
@@ -174,7 +208,7 @@ body {
   width: 100%;
   height: 100vh;
   background: rgba(0, 0, 0, 0.4);
-  z-index: 9999;
+  z-index: 99999;
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -195,8 +229,6 @@ body {
   animation: popupSlide 0.25s ease-out forwards;
 }
 
-
-
 .mobile-header {
   display: flex;
   justify-content: space-between;
@@ -214,6 +246,12 @@ body {
   padding: 6px;
   border-radius: 50%;
   color: #333;
+  transition: 0.2s;
+}
+
+.close-btn:hover {
+  color: #ff7a00;
+  background: #fff0e5;
 }
 
 .mobile-line {
@@ -260,6 +298,11 @@ body {
   font-weight: 600;
   font-size: 13px;
   cursor: pointer;
+  transition: 0.2s;
+}
+
+.mobile-search-btn:hover {
+  background: #e66e00;
 }
 
 .mobile-links {
@@ -298,6 +341,13 @@ body {
   background: #f5f5f5;
   user-select: none;
   border: 1px solid #e8e8e8;
+  transition: 0.2s;
+}
+
+.lang-box:hover {
+  color: #ff7a00;
+  border-color: #ff7a00;
+  background: #fff0e5;
 }
 
 .lang-menu {
@@ -317,9 +367,13 @@ body {
   padding: 8px 12px;
   font-size: 13px;
   cursor: pointer;
+  transition: 0.2s;
 }
 
-
+.lang-item:hover {
+  color: #ff7a00;
+  background: #fff0e5;
+}
 
 .mobile-icons {
   display: flex;
@@ -334,14 +388,28 @@ body {
 }
 
 @media (max-width: 768px) {
+  body {
+    padding-top: 65px;
+  }
+
   .menu,
   .search-wrapper {
     display: none;
   }
 
   .navbar {
+    width: 100%;
+    max-width: none;
     height: 65px;
     padding: 0 16px;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: none;
+
+    z-index: 9999;
+    background: #fff;
   }
 
   .hamburger {
@@ -353,5 +421,25 @@ body {
     border: 1px solid #e0e0e0;
     border-radius: 8px;
     background: #fff;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo h2 {
+    font-size: 21px;
+  }
+
+  .logo-img {
+    width: 34px;
+    height: 34px;
+  }
+
+  .mobile-modal {
+    padding: 8px;
+  }
+
+  .mobile-menu {
+    border-radius: 16px;
+    padding: 14px;
   }
 }

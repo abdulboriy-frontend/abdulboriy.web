@@ -1,91 +1,94 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React,{useEffect,useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {useTranslation} from "react-i18next";
 import axios from "axios";
-
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination } from "swiper/modules";
-
+import {Swiper,SwiperSlide} from "swiper/react";
+import {Autoplay,Pagination} from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
-
-import {
-  MapPin,
-  ShieldCheck,
-  Clock3,
-  ArrowRight,
-} from "lucide-react";
-
+import {MapPin,ShieldCheck,Clock3,ArrowRight} from "lucide-react";
 import "./Seller.css";
 
-const Seller = () => {
-  const navigate = useNavigate();
+const Seller=()=>{
+  const navigate=useNavigate();
+  const {t,i18n}=useTranslation();
 
-  const [sellers, setSellers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [sellers,setSellers]=useState([]);
+  const [loading,setLoading]=useState(true);
 
-  useEffect(() => {
-    async function getSellers() {
-      try {
-        const response = await axios.get(
+  console.log("HOZIRGI TIL:",i18n.language);
+
+  useEffect(()=>{
+    async function getSellers(){
+      try{
+        const response=await axios.get(
           "https://uzum-api.onrender.com/api/sellers"
         );
 
-        const data = response.data;
-
-        setSellers(data.data || []);
-      } catch (error) {
-        console.error( error);
-      } finally {
+        setSellers(response.data.data||[]);
+      }catch(error){
+        console.error("Xato:",error);
+      }finally{
         setLoading(false);
       }
     }
 
     getSellers();
-  }, []);
+  },[]);
 
-  if (loading) {
+  if(loading){
     return <div className="load-box"></div>;
   }
 
-  return (
+  return(
     <div className="sl-wrapper">
+
       <h1 className="sl-heading">
-        Tasdiqlangan sotuvchilar
+        {t("verifiedSellers")}
       </h1>
 
       <Swiper
-        modules={[Autoplay, Pagination]}
+        modules={[Autoplay,Pagination]}
         spaceBetween={20}
         slidesPerView={4}
         loop={true}
         autoplay={{
-          delay: 2500,
-          disableOnInteraction: false,
+          delay:2500,
+          disableOnInteraction:false
         }}
-        pagination={{ clickable: true }}
+        pagination={{
+          clickable:true
+        }}
         breakpoints={{
-          0: {
-            slidesPerView: 1,
-            spaceBetween: 10,
+          0:{
+            slidesPerView:1,
+            spaceBetween:10
           },
-          480: {
-            slidesPerView: 2,
-            spaceBetween: 15,
+          480:{
+            slidesPerView:2,
+            spaceBetween:15
           },
-          768: {
-            slidesPerView: 3,
-            spaceBetween: 15,
+          768:{
+            slidesPerView:3,
+            spaceBetween:15
           },
-          1024: {
-            slidesPerView: 4,
-            spaceBetween: 20,
-          },
+          1024:{
+            slidesPerView:4,
+            spaceBetween:20
+          }
         }}
         className="sl-swiper"
       >
-        {sellers.map((seller) => (
+
+        {sellers.map((seller)=>(
+
           <SwiperSlide key={seller.id}>
-            <div className="sl-card">
+
+            <div
+              className="sl-card"
+              onClick={()=>navigate(`/seller/${seller.slug}`)}
+            >
+
               <div className="sl-thumb">
                 <img
                   src={seller.logoUrl}
@@ -99,10 +102,8 @@ const Seller = () => {
               </h2>
 
               <div className="sl-pin">
-                <MapPin size={15} />
-                <span>
-                  {seller.location}
-                </span>
+                <MapPin size={15}/>
+                <span>{seller.location}</span>
               </div>
 
               <p className="sl-exp">
@@ -110,16 +111,19 @@ const Seller = () => {
               </p>
 
               <div className="sl-metrics">
+
                 <div className="st-box">
                   <ShieldCheck
                     size={16}
                     color="#ff6600"
                   />
+
                   <span className="st-val">
                     {seller.reliabilityScore}%
                   </span>
+
                   <span className="st-lbl">
-                    Ishonchlilik
+                    {t("reliability")}
                   </span>
                 </div>
 
@@ -128,23 +132,37 @@ const Seller = () => {
                     size={16}
                     color="#ff6600"
                   />
+
                   <span className="st-val">
                     {seller.responseTimeLabel}
                   </span>
+
                   <span className="st-lbl">
-                    Javob vaqti
+                    {t("responseTime")}
                   </span>
                 </div>
+
               </div>
 
-              <button className="btn-link" onClick={() =>   navigate(`/seller/${seller.slug}`) }  >
-                Sotuvchi sahifasi
-                <ArrowRight size={18} />
+              <button
+                className="btn-link"
+                onClick={(e)=>{
+                  e.stopPropagation();
+                  navigate(`/seller/${seller.slug}`);
+                }}
+              >
+                {t("sellerPage")}
+                <ArrowRight size={18}/>
               </button>
+
             </div>
+
           </SwiperSlide>
+
         ))}
+
       </Swiper>
+
     </div>
   );
 };

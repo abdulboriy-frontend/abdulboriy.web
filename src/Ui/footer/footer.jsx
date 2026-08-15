@@ -1,8 +1,10 @@
 import "./footer.css";
-
-import { Package, Globe, Mail, Phone, ChevronRight, Apple, Play,} from "lucide-react";
+import { Package, Globe, Mail, Phone, ChevronRight, Apple, Play } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 function Footer() {
+  const { t } = useTranslation();
+
   return (
     <footer className="footer">
 
@@ -15,81 +17,39 @@ function Footer() {
           </div>
 
           <p className="desc">
-            O'zbekistondagi eng yirik ulgurji savdo platformasi.
-            Biz tadbirkorlar va zavodlarni bitta joyga jamlaymiz.
+            {t("footerDescription")}
           </p>
 
           <div className="social">
-
-            <a href="#" className="icon">
-              <Globe size={18} />
-            </a>
-
-            <a href="#" className="icon">
-              <Mail size={18} />
-            </a>
-
-            <a href="#" className="icon">
-              <Phone size={18} />
-            </a>
-
+            <a href="#" className="icon"><Globe size={18} /></a>
+            <a href="#" className="icon"><Mail size={18} /></a>
+            <a href="#" className="icon"><Phone size={18} /></a>
           </div>
         </div>
 
         <div className="footer_box">
-          <h3>Xaridorlar uchun</h3>
+          <h3>{t("buyers")}</h3>
 
-          <a href="#">
-            <ChevronRight size={16} />
-            Qanday buyurtma berish
-          </a>
-
-          <a href="#">
-            <ChevronRight size={16} />
-            To'lov usullari
-          </a>
-
-          <a href="#">
-            <ChevronRight size={16} />
-            Yetkazib berish
-          </a>
-
-          <a href="#">
-            <ChevronRight size={16} />
-            Kafolat va qaytarish
-          </a>
+          <a href="#"><ChevronRight size={16} />{t("howToOrder")}</a>
+          <a href="#"><ChevronRight size={16} />{t("paymentMethods")}</a>
+          <a href="#"><ChevronRight size={16} />{t("deliveryFooter")}</a>
+          <a href="#"><ChevronRight size={16} />{t("warranty")}</a>
         </div>
 
         <div className="footer_box">
-          <h3>Sotuvchilar uchun</h3>
+          <h3>{t("sellers")}</h3>
 
-          <a href="#">
-            <ChevronRight size={16} />
-            Sotuvchi bo'lish
-          </a>
-
-          <a href="#">
-            <ChevronRight size={16} />
-            Sotuvchilar qoidalari
-          </a>
-
-          <a href="#">
-            <ChevronRight size={16} />
-            Reklama va marketing
-          </a>
-
-          <a href="#">
-            <ChevronRight size={16} />
-            Logistika yordami
-          </a>
+          <a href="#"><ChevronRight size={16} />{t("becomeSeller")}</a>
+          <a href="#"><ChevronRight size={16} />{t("sellerRules")}</a>
+          <a href="#"><ChevronRight size={16} />{t("advertising")}</a>
+          <a href="#"><ChevronRight size={16} />{t("logisticsHelp")}</a>
         </div>
 
         <div className="footer_box">
-          <h3>Ilovamizni yuklang</h3>
+          <h3>{t("downloadApp")}</h3>
 
           <p className="desc">
-            Har doim aloqada bo'ling va eng yaxshi
-            narxlardan xabardor bo'ling.
+            {t("appDescription")}
           </p>
 
           <button className="store">
@@ -107,13 +67,12 @@ function Footer() {
               <span>Google Play</span>
             </div>
           </button>
-
         </div>
 
       </div>
 
       <div className="footer_bottom">
-        © 2024 Minibaba Marketplace. Barcha huquqlar himoyalangan.
+        {t("copyright")}
       </div>
 
     </footer>

@@ -1,7 +1,15 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "./Cart.css";
 
-function Cart({ cartItems, increaseCartItem, decreaseCartItem, removeCartItem }) {
+function Cart({
+  cartItems,
+  increaseCartItem,
+  decreaseCartItem,
+  removeCartItem
+}) {
+  const { t } = useTranslation();
+
   const subtotal = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
     0
@@ -14,11 +22,14 @@ function Cart({ cartItems, increaseCartItem, decreaseCartItem, removeCartItem })
     return (
       <div className="cart-page">
         <div className="cart-container">
-          <h1>My Shopping Cart</h1>
+          <h1>{t("shoppingCart")}</h1>
 
           <div className="empty-cart">
-            <h2>Cart is empty</h2>
-            <Link to="/">Back to Shop</Link>
+            <h2>{t("cartEmpty")}</h2>
+
+            <Link to="/">
+              {t("backToShop")}
+            </Link>
           </div>
         </div>
       </div>
@@ -28,98 +39,154 @@ function Cart({ cartItems, increaseCartItem, decreaseCartItem, removeCartItem })
   return (
     <div className="cart-page">
       <div className="cart-container">
-        <h1>My Shopping Cart</h1>
+
+        <h1>{t("shoppingCart")}</h1>
 
         <div className="cart-title">
-          <p>Product</p>
-          <p>Variant</p>
-          <p>Quantity</p>
-          <p>Price</p>
+          <p>{t("product")}</p>
+          <p>{t("variant")}</p>
+          <p>{t("quantity")}</p>
+          <p>{t("price")}</p>
           <p></p>
         </div>
 
         {cartItems.map((item) => (
-          <div className="cart-item" key={`${item.id}-${item.variant}`}>
+          <div
+            className="cart-item"
+            key={`${item.id}-${item.variant}`}
+          >
+
             <div className="product">
+
               <div className="image-box">
-                <img src={item.image} alt={item.name} />
+                <img
+                  src={item.image}
+                  alt={item.name}
+                />
               </div>
 
               <div>
                 <h3>{item.name}</h3>
-                <p>Product ID: {item.id}</p>
+
+                <p>
+                  {t("productId")}: {item.id}
+                </p>
               </div>
+
             </div>
 
-            <div className="size">{item.variant}</div>
+            <div className="size">
+              {item.variant}
+            </div>
 
             <div className="quantity">
-              <button onClick={() => decreaseCartItem(item.id, item.variant)}>
+
+              <button
+                onClick={() =>
+                  decreaseCartItem(item.id, item.variant)
+                }
+              >
                 −
               </button>
 
-              <span>{String(item.quantity).padStart(2, "0")}</span>
+              <span>
+                {String(item.quantity).padStart(2, "0")}
+              </span>
 
-              <button onClick={() => increaseCartItem(item.id, item.variant)}>
+              <button
+                onClick={() =>
+                  increaseCartItem(item.id, item.variant)
+                }
+              >
                 +
               </button>
+
             </div>
 
-            <b className="price">  ${(item.price * item.quantity).toFixed(2)}</b>
+            <b className="price">
+              ${(item.price * item.quantity).toFixed(2)}
+            </b>
 
-            <button className="remove" onClick={() => removeCartItem(item.id, item.variant)} >
+            <button
+              className="remove"
+              onClick={() =>
+                removeCartItem(item.id, item.variant)
+              }
+            >
               ×
             </button>
+
           </div>
         ))}
 
         <div className="summary">
+
           <div className="summary-card">
+
             <div>
-              <span>Discount</span>
+              <span>{t("discount")}</span>
               <b>$0.00</b>
             </div>
 
             <div>
-              <span>Delivery</span>
+              <span>{t("delivery")}</span>
               <b>${delivery.toFixed(2)}</b>
             </div>
+
           </div>
 
           <div className="summary-card">
+
             <div>
-              <span>Subtotal</span>
+              <span>{t("subtotal")}</span>
               <b>${subtotal.toFixed(2)}</b>
             </div>
 
             <div>
-              <span>Total</span>
+              <span>{t("total")}</span>
               <b>${total.toFixed(2)}</b>
             </div>
+
           </div>
+
         </div>
 
         <div className="promo">
+
           <label>
-            If you have a promotion code, please enter it here
+            {t("promoText")}
           </label>
 
           <div>
-            <input   type="text" placeholder="Please enter promo code"   />
 
-            <button>Apply Discount</button>
+            <input
+              type="text"
+              placeholder={t("promoPlaceholder")}
+            />
+
+            <button>
+              {t("applyDiscount")}
+            </button>
+
           </div>
+
         </div>
 
         <div className="bottom-buttons">
-          <Link to="/" className="back">
-            Back to Shop
+
+          <Link
+            to="/"
+            className="back"
+          >
+            {t("backToShop")}
           </Link>
 
           <button className="checkout">
-            Checkout
+            {t("checkout")}
           </button>
+
         </div>
+
       </div>
     </div>
   );

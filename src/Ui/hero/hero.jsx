@@ -10,24 +10,30 @@ import {
   Car,
   Home as HomeIcon,
   Baby,
-  Sparkles,
+  Sparkles
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 function Hero() {
+  const { t } = useTranslation();
+
   return (
     <div className="hero">
       <div className="hero-container">
+
         <div className="sidebar">
+
           <div className="sidebar-header">
             <Menu size={18} />
-            <span>Kategoriyalar</span>
+            <span>{t("categories")}</span>
           </div>
 
           <div className="category-list">
+
             <div className="category-item">
               <div className="category-info">
                 <Tv className="category-icon" />
-                <span>Elektronika</span>
+                <span>{t("electronics")}</span>
               </div>
               <ChevronRight className="category-arrow" />
             </div>
@@ -35,7 +41,7 @@ function Hero() {
             <div className="category-item">
               <div className="category-info">
                 <Shirt className="category-icon" />
-                <span>Kiyim-kechak</span>
+                <span>{t("clothes")}</span>
               </div>
               <ChevronRight className="category-arrow" />
             </div>
@@ -43,7 +49,7 @@ function Hero() {
             <div className="category-item">
               <div className="category-info">
                 <Wrench className="category-icon" />
-                <span>Qurilish mollari</span>
+                <span>{t("construction")}</span>
               </div>
               <ChevronRight className="category-arrow" />
             </div>
@@ -51,7 +57,7 @@ function Hero() {
             <div className="category-item">
               <div className="category-info">
                 <Apple className="category-icon" />
-                <span>Ulgurji oziq-ovqat</span>
+                <span>{t("food")}</span>
               </div>
               <ChevronRight className="category-arrow" />
             </div>
@@ -59,7 +65,7 @@ function Hero() {
             <div className="category-item">
               <div className="category-info">
                 <Car className="category-icon" />
-                <span>Avto qismlar</span>
+                <span>{t("carParts")}</span>
               </div>
               <ChevronRight className="category-arrow" />
             </div>
@@ -67,7 +73,7 @@ function Hero() {
             <div className="category-item">
               <div className="category-info">
                 <HomeIcon className="category-icon" />
-                <span>Uy buyumlari</span>
+                <span>{t("home")}</span>
               </div>
               <ChevronRight className="category-arrow" />
             </div>
@@ -75,7 +81,7 @@ function Hero() {
             <div className="category-item">
               <div className="category-info">
                 <Baby className="category-icon" />
-                <span>Bolalar uchun</span>
+                <span>{t("kids")}</span>
               </div>
               <ChevronRight className="category-arrow" />
             </div>
@@ -83,27 +89,38 @@ function Hero() {
             <div className="category-item">
               <div className="category-info">
                 <Sparkles className="category-icon" />
-                <span>Go'zallik</span>
+                <span>{t("beauty")}</span>
               </div>
               <ChevronRight className="category-arrow" />
             </div>
+
           </div>
         </div>
 
         <div className="hero-banner">
-          <div className="hero-content">
-            <span className="hero-tag">MINIBABA LOGISTICS</span>
 
-            <h1>O‘zbekiston bo‘ylab tez yetkazib berish</h1>
+          <div className="hero-content">
+
+            <span className="hero-tag">
+              {t("logistics")}
+            </span>
+
+            <h1>
+              {t("heroTitle")}
+            </h1>
 
             <p>
-              Eng arzon ulgurji narxlar va ishonchli sotuvchilar bitta
-              platformada.
+              {t("heroDescription")}
             </p>
 
-            <button className="hero-btn">Batafsil</button>
+            <button className="hero-btn">
+              {t("details")}
+            </button>
+
           </div>
+
         </div>
+
       </div>
     </div>
   );

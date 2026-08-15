@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import "./logi.css";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function Login() {
   const [phone, setPhone] = useState("");
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-
     navigate("/");
   };
 
@@ -17,10 +17,13 @@ export default function Login() {
     <div className="login-container">
 
       <footer className="login-footer-top">
-        <a href="#about">Biz haqimizda</a>
-        <a href="#contacts">Aloqa</a>
-        <a href="#terms">Foydalanish qoidalari</a>
-        <p>© 2024 Minibaba Marketplace. Barcha huquqlar himoyalangan.</p>
+        <a href="#about">{t("about")}</a>
+        <a href="#contacts">{t("contacts")}</a>
+        <a href="#terms">{t("rules")}</a>
+
+        <p>
+          © 2026 Minibaba Marketplace. {t("rights")}.
+        </p>
       </footer>
 
       <form className="login-card" onSubmit={handleSubmit}>
@@ -29,39 +32,49 @@ export default function Login() {
           <i className="fas fa-lock-open lock-icon"></i>
         </div>
 
-        <h2 className="login-title">Xush kelibsiz!</h2>
+        <h2 className="login-title">
+          {t("welcome")}
+        </h2>
+
         <p className="login-subtitle">
-          Kirish va xaridni davom ettirish
+          {t("loginContinue")}
         </p>
 
         <div className="sms-badge">
-          <span className="dot"></span> SMS KOD ORQALI KIRISH
+          <span className="dot"></span>
+          {t("smsLogin")}
         </div>
 
         <div className="form-group">
-          <label>Telefon raqami</label>
+          <label>{t("phoneNumber")}</label>
 
           <div className="input-wrapper">
             <span className="country-code">+998</span>
 
-<input type="text" placeholder="90 123 45 67"value={phone}onChange={(e) => setPhone(e.target.value)}   required />
+            <input
+              type="text"
+              placeholder="90 123 45 67"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
+            />
           </div>
 
           <span className="input-hint">
-            Sizga SMS orqali tasdiqlash kodi yuboriladi.
+            {t("smsHint")}
           </span>
         </div>
 
         <button type="submit" className="btn-primary">
-          Kirish
+          {t("login")}
         </button>
 
         <div className="divider">
-          <span>yoki</span>
+          <span>{t("or")}</span>
         </div>
 
         <button type="button" className="btn-secondary">
-          Ro'yxatdan o'tish
+          {t("register")}
         </button>
 
         <div className="social-login">
@@ -75,9 +88,13 @@ export default function Login() {
         </div>
 
         <p className="terms-text">
-          Davom etish orqali siz bizning{" "}
-          <a href="#terms">Xizmat ko'rsatish shartlari</a> va{" "}
-          <a href="#privacy">Maxfiylik siyosatimizga</a> rozilik bildirasiz.
+          {t("termsText")}{" "}
+
+          <a href="#terms">
+            {t("terms")}
+          </a>{" "}
+
+          {t("privacy")}
         </p>
 
       </form>

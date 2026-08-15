@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
@@ -11,6 +12,8 @@ import Card from "../card/card";
 import "./ProductCard.css";
 
 function ProductCard() {
+  const { t } = useTranslation();
+
   const [malumotlar, setMalumotlar] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -35,14 +38,15 @@ function ProductCard() {
   }, []);
 
   if (loading) {
-    return <div className="loading">Yuklanmoqda...</div>;
+    return <div className="loading">{t("loading")}</div>;
   }
 
   return (
     <div className="konteyner">
+
       <div className="tepa-qism">
-        <h1>Top mahsulotlar</h1>
-        <a href="#">Hammasini ko'rish</a>
+        <h1>{t("topProducts")}</h1>
+        <a href="#">{t("seeAll")}</a>
       </div>
 
       <Swiper
@@ -70,16 +74,42 @@ function ProductCard() {
           1200: {
             slidesPerView: 5,
           },
-
         }}
       >
+
         {malumotlar.map((buyum) => (
           <SwiperSlide key={buyum.id}>
+
             <Link to={`/product/${buyum.slug || buyum.id}`}>
-              <Card rasm={buyum.imageUrl} nomi={buyum.name} narxi={buyum.discountedPrice + " " + (buyum.currency || "UZS")} buyurtma={"Minimal buyurtma: " + buyum.minOrderQuantity} holat={buyum.isVerifiedSeller ? "Tasdiqlangan Sotuvchi" : "Oddiy Sotuvchi"} chegirma={buyum.discountPercent ? "-" + buyum.discountPercent + "%" : ""} />
+
+              <Card
+                rasm={buyum.imageUrl}
+                nomi={buyum.name}
+                narxi={
+                  buyum.discountedPrice +
+                  " " +
+                  buyum.currency
+                }
+                buyurtma={t("minimumOrder", {
+                  count: buyum.minOrderQuantity,
+                })}
+                holat={
+                  buyum.isVerifiedSeller
+                    ? t("verifiedSeller")
+                    : t("normalSeller")
+                }
+                chegirma={
+                  buyum.discountPercent
+                    ? "-" + buyum.discountPercent + "%"
+                    : ""
+                }
+              />
+
             </Link>
+
           </SwiperSlide>
         ))}
+
       </Swiper>
     </div>
   );

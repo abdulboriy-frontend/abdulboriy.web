@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 
 import {
   BadgeCheck,
@@ -20,6 +21,7 @@ import "./ProductDetails.css";
 
 function ProductDetail({ onAddToCart }) {
   const { slug } = useParams();
+  const { t } = useTranslation();
 
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -48,18 +50,20 @@ function ProductDetail({ onAddToCart }) {
   }, [slug]);
 
   if (!product) {
-    return <h2>Yuklanmoqda...</h2>;
+    return <h2>{t("loading")}</h2>;
   }
 
   const images =
-    product.images?.length > 0  ? product.images  : [product.imageUrl || "https://via.placeholder.com/600"];
+    product.images?.length > 0
+      ? product.images
+      : [product.imageUrl || "https://via.placeholder.com/600"];
 
   const variants = [
-    "Standard",
-    "Eco-Flow",
-    "Pro-Max X1",
-    "Heavy Duty",
-    "Compact",
+    "standard",
+    "ecoFlow",
+    "proMax",
+    "heavyDuty",
+    "compact",
   ];
 
   const normalPrice = Number(product.price) || 1200;
@@ -100,18 +104,17 @@ function ProductDetail({ onAddToCart }) {
       onAddToCart(cartProduct, quantity, "Pro-Max X1");
     }
 
-    alert("Mahsulot savatga qo'shildi!");
+    alert(t("addToCart"));
   }
 
   return (
     <div className="product-detail">
       <div className="product-container">
 
-        {/* Rasmlar */}
         <div className="image-section">
           <img
             src={images[selectedImage]}
-            alt={product.name || "Mahsulot"}
+            alt={product.name || "Product"}
             className="main-image"
           />
 
@@ -126,18 +129,17 @@ function ProductDetail({ onAddToCart }) {
                 }
                 onClick={() => setSelectedImage(index)}
               >
-                <img src={image} alt="Mahsulot" />
+                <img src={image} alt="Product" />
               </button>
             ))}
           </div>
         </div>
 
-        {/* Mahsulot ma'lumotlari */}
         <div className="info-section">
 
           <div className="badge-row">
             <div className="badge-new">
-              Yangi mahsulot
+              {t("newProduct")}
             </div>
 
             <div className="product-id">
@@ -155,18 +157,22 @@ function ProductDetail({ onAddToCart }) {
               <span>4.8</span>
             </div>
 
-            <span>124 ta sharh</span>
-            <span>500+ sotilgan</span>
+            <span>124 {t("ratingReviews")}</span>
+            <span>500+ {t("sold")}</span>
           </div>
 
           <div className="wholesale-box">
+
             <div className="wholesale-header">
-              <h3>Ulgurji narxlar</h3>
+              <h3>{t("wholesalePrices")}</h3>
 
               <div className="moq-badge">
                 <Package size={16} />
+
                 <span>
-                  MOQ: {product.minOrderQuantity || 2} dona
+                  {t("moq")}:{" "}
+                  {product.minOrderQuantity || 2}{" "}
+                  {t("pieces")}
                 </span>
               </div>
             </div>
@@ -179,7 +185,7 @@ function ProductDetail({ onAddToCart }) {
                 }`}
               >
                 <div className="price-range">
-                  1 - 10 dona
+                  1 - 10 {t("pieces")}
                 </div>
 
                 <div className="price-value">
@@ -195,11 +201,11 @@ function ProductDetail({ onAddToCart }) {
                 }`}
               >
                 <div className="popular-badge">
-                  OMMABOP
+                  {t("popular")}
                 </div>
 
                 <div className="price-range">
-                  11 - 50 dona
+                  11 - 50 {t("pieces")}
                 </div>
 
                 <div className="price-value">
@@ -213,7 +219,7 @@ function ProductDetail({ onAddToCart }) {
                 }`}
               >
                 <div className="price-range">
-                  51+ dona
+                  51+ {t("pieces")}
                 </div>
 
                 <div className="price-value">
@@ -222,29 +228,36 @@ function ProductDetail({ onAddToCart }) {
               </div>
 
             </div>
-          </div>          <div className="variant-section">
+          </div>
+
+          <div className="variant-section">
+
             <h4 className="variant-title">
-              KONFIGURATSIYANI TANLANG
+              {t("configuration")}
             </h4>
 
             <div className="variant-buttons">
+
               {variants.map((variant) => (
                 <div
                   key={variant}
                   className={
-                    variant === "Pro-Max X1"
+                    variant === "proMax"
                       ? "variant-btn active"
                       : "variant-btn"
                   }
                 >
-                  {variant}
+                  {t(variant)}
                 </div>
               ))}
+
             </div>
           </div>
 
           <div className="seller-card">
+
             <div className="seller-info">
+
               <div className="seller-logo">
                 {product.seller?.logoUrl ? (
                   <img
@@ -263,57 +276,76 @@ function ProductDetail({ onAddToCart }) {
                 </h4>
 
                 <div className="seller-tags">
+
                   <div className="seller-tag">
                     <BadgeCheck size={15} />
-                    <span>TASDIQLANGAN</span>
+                    <span>{t("sellerVerified")}</span>
                   </div>
 
                   <div className="seller-tag">
                     <MapPin size={15} />
-                    <span>Toshkent, UZ</span>
+                    <span>{t("tashkent")}</span>
                   </div>
+
                 </div>
               </div>
+
             </div>
 
             <div className="store-btn">
-              Do'konni ko'rish
+              {t("viewStore")}
             </div>
+
           </div>
 
         </div>
       </div>
 
       <div className="tabs-container">
+
         <div className="tabs-header">
-          <div className="tab-btn">Tavsif</div>
-          <div className="tab-btn active">
-            Yetkazib berish
-          </div>
+
           <div className="tab-btn">
-            Sharhlar (124)
+            {t("description")}
           </div>
+
+          <div className="tab-btn active">
+            {t("delivery")}
+          </div>
+
+          <div className="tab-btn">
+            {t("reviews")} (124)
+          </div>
+
         </div>
 
         <div className="tab-content">
+
           <div className="tab-simple-text">
+
             <Truck size={27} />
 
             <div>
-              <h3>Yetkazib berish</h3>
+
+              <h3>{t("deliveryTitle")}</h3>
+
               <p>
-                Toshkent bo'ylab 24 soatda,
-                viloyatlarga 2-5 ish kunida.
+                {t("deliveryText")}
               </p>
+
             </div>
+
           </div>
+
         </div>
       </div>
 
       <div className="bottom-bar-panel">
+
         <div className="summary-price">
+
           <div className="total-title">
-            Umumiy narx
+            {t("totalPrice")}
           </div>
 
           <div className="total-price">
@@ -321,11 +353,13 @@ function ProductDetail({ onAddToCart }) {
           </div>
 
           <div className="unit-price">
-            1 dona: ${unitPrice.toFixed(2)}
+            {t("onePiece")}: ${unitPrice.toFixed(2)}
           </div>
+
         </div>
 
         <div className="counter-controls">
+
           <button onClick={decreaseQuantity}>
             <Minus size={18} />
           </button>
@@ -335,17 +369,19 @@ function ProductDetail({ onAddToCart }) {
           <button onClick={increaseQuantity}>
             <Plus size={18} />
           </button>
+
         </div>
 
         <div className="action-buttons">
+
           <div className="btn-chat">
             <MessageCircle size={18} />
-            <span>Chat orqali yozish</span>
+            <span>{t("chat")}</span>
           </div>
 
           <div className="btn-rfq">
             <FileText size={18} />
-            <span>RFQ</span>
+            <span>{t("rfq")}</span>
           </div>
 
           <button
@@ -353,8 +389,9 @@ function ProductDetail({ onAddToCart }) {
             onClick={handleAddToCart}
           >
             <ShoppingCart size={18} />
-            <span>Savatga qo'shish</span>
+            <span>{t("addToCart")}</span>
           </button>
+
         </div>
       </div>
     </div>
