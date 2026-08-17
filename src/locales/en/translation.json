@@ -60,15 +60,31 @@
   "about": "About us",
   "contact": "Contact",
   "terms": "Terms of use",
-  "copyright": "© 2026 Minibaba Marketplace. All rights reserved.",
 
   "welcome": "Welcome!",
-  "continueShopping": "Login and continue shopping",
-  "smsLogin": "LOGIN VIA SMS CODE",
-  "phone": "Phone number",
-  "smsHint": "A verification code will be sent to you via SMS.",
+  "continueShopping": "Login to continue shopping",
+  "emailLabel": "Email address",
+  "passwordLabel": "Password",
+  "forgotPassword": "Forgot password?",
   "or": "or",
   "register": "Sign up",
+
+  "loginTitle": "Login",
+  "loginSubtitle": "Login to continue shopping",
+  "emailPlaceholder": "Enter your email",
+  "passwordPlaceholder": "Enter your password",
+  "loginButton": "Login",
+  "registerButton": "Sign up",
+
+  "registerTitle": "Sign up",
+  "registerSubtitle": "Create an account to continue shopping",
+  "nameLabel": "Name",
+  "namePlaceholder": "Enter your name",
+  "registerEmailPlaceholder": "Enter your email",
+  "registerPasswordPlaceholder": "Enter your password",
+  "registerSubmit": "Sign up",
+  "alreadyAccount": "Already have an account?",
+  "loginHere": "Login",
 
   "agreement": "By continuing, you agree to our",
   "serviceTerms": "Terms of Service",
@@ -93,7 +109,6 @@
   "promoText": "If you have a promotion code, please enter it here",
   "promoPlaceholder": "Please enter promo code",
   "applyDiscount": "Apply Discount",
-
   "checkout": "Checkout",
 
   "verifiedSellers": "Verified sellers",
@@ -115,15 +130,15 @@
   "buyers": "For buyers",
   "howToOrder": "How to order",
   "paymentMethods": "Payment methods",
-  "deliveryFooter": "Delivery",
-  "warranty": "Warranty and returns",
+  "warrantyReturn": "Warranty and returns",
 
   "sellers": "For sellers",
   "becomeSeller": "Become a seller",
   "sellerRules": "Seller rules",
-  "advertising": "Advertising and marketing",
-  "logisticsHelp": "Logistics support",
+  "advertisingMarketing": "Advertising and marketing",
+  "logisticsSupport": "Logistics support",
 
   "downloadApp": "Download our app",
-  "appDescription": "Stay connected and always be informed about the best prices."
+  "appDescription": "Stay connected and always be informed about the best prices.",
+  "copyright": "© 2026 Minibaba Marketplace. All rights reserved."
 }

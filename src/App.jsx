@@ -11,6 +11,7 @@ import Footer from "./Ui/footer/footer";
 import Login from "./Ui/Login/Login";
 import SellerCard from "./Ui/sellerCard/SellerCard";
 
+import Regsiter from "./pages/Register/Register";
 import ProductDetail from "./pages/ProductDetails/ProductDetails";
 import Cart from "./pages/Cart/Cart";
 
@@ -25,7 +26,6 @@ function Home() {
 }
 
 function App() {
-  
   const [cartItems, setCartItems] = useState(() => {
     const savedCart = localStorage.getItem("minibaba-cart");
 
@@ -33,7 +33,7 @@ function App() {
       try {
         return JSON.parse(savedCart);
       } catch (error) {
-        console.error( error);
+        console.error(error);
       }
     }
 
@@ -47,9 +47,9 @@ function App() {
           "https://jsonplaceholder.typicode.com/todos?_limit=3"
         );
 
-        console.log( response.data);
+        console.log(response.data);
       } catch (error) {
-        console.error( error);
+        console.error(error);
       }
     };
 
@@ -74,11 +74,11 @@ function App() {
       if (existingItem) {
         return oldItems.map((item) =>
           item.id === product.id &&
-            item.variant === variant
+          item.variant === variant
             ? {
-              ...item,
-              quantity: item.quantity + quantity,
-            }
+                ...item,
+                quantity: item.quantity + quantity,
+              }
             : item
         );
       }
@@ -106,11 +106,11 @@ function App() {
     setCartItems((oldItems) =>
       oldItems.map((item) =>
         item.id === id &&
-          item.variant === variant
+        item.variant === variant
           ? {
-            ...item,
-            quantity: item.quantity + 1,
-          }
+              ...item,
+              quantity: item.quantity + 1,
+            }
           : item
       )
     );
@@ -120,19 +120,18 @@ function App() {
     setCartItems((oldItems) =>
       oldItems.map((item) =>
         item.id === id &&
-          item.variant === variant
+        item.variant === variant
           ? {
-            ...item,
-            quantity: Math.max(
-              1,
-              item.quantity - 1
-            ),
-          }
+              ...item,
+              quantity: Math.max(
+                1,
+                item.quantity - 1
+              ),
+            }
           : item
       )
     );
   }
-
 
   function removeCartItem(id, variant) {
     setCartItems((oldItems) =>
@@ -146,10 +145,8 @@ function App() {
     );
   }
 
- 
   const cartCount = cartItems.reduce(
-    (total, item) =>
-      total + item.quantity,
+    (total, item) => total + item.quantity,
     0
   );
 
@@ -157,15 +154,48 @@ function App() {
     <>
       <Navbar cartCount={cartCount} />
 
-      <Routes> <Route path="/"element={<Home />} />
- 
-        <Route path="/login" element={<Login />} />
+      <Routes>
+        <Route
+          path="/"
+          element={<Home />}
+        />
 
-        <Route  path="/product/:slug"  element={ <ProductDetail   onAddToCart={handleAddToCart} /> }/>
+        <Route
+          path="/login"
+          element={<Login />}
+        />
 
-        <Route path="/cart" element={<Cart cartItems={cartItems} increaseCartItem={increaseCartItem} decreaseCartItem={decreaseCartItem} removeCartItem={removeCartItem} />} />
+        <Route
+          path="/register"
+          element={<Regsiter />}
+        />
 
-        <Route path="/seller/:slug" element={<SellerCard />} /> </Routes>
+        <Route
+          path="/product/:slug"
+          element={
+            <ProductDetail
+              onAddToCart={handleAddToCart}
+            />
+          }
+        />
+
+        <Route
+          path="/cart"
+          element={
+            <Cart
+              cartItems={cartItems}
+              increaseCartItem={increaseCartItem}
+              decreaseCartItem={decreaseCartItem}
+              removeCartItem={removeCartItem}
+            />
+          }
+        />
+
+        <Route
+          path="/seller/:slug"
+          element={<SellerCard />}
+        />
+      </Routes>
 
       <Footer />
     </>

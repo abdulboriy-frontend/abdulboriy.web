@@ -14,7 +14,7 @@ body {
 .navbar,
 .container {
   width: 100%;
-  max-width: 1440px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 120px;
 }
@@ -28,14 +28,12 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   position: fixed;
   top: 0;
   left: 50%;
   transform: translateX(-50%);
   z-index: 9999;
-
-  background: #fff;
+  background-color: #fcfcfc;
 }
 
 .logo {
@@ -380,6 +378,18 @@ body {
   gap: 20px;
 }
 
+@keyframes popupSlide {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 @media (max-width: 1200px) {
   .navbar,
   .container {
@@ -402,14 +412,12 @@ body {
     max-width: none;
     height: 65px;
     padding: 0 16px;
-
     position: fixed;
     top: 0;
     left: 0;
     transform: none;
-
     z-index: 9999;
-    background: #fff;
+    background: #fcfcfc;
   }
 
   .hamburger {
@@ -422,16 +430,22 @@ body {
     border-radius: 8px;
     background: #fff;
   }
+
+  .logo {
+    margin-top: 10;
+  }
 }
 
 @media (max-width: 480px) {
   .logo h2 {
     font-size: 21px;
+    margin-top: 10px;
   }
 
   .logo-img {
     width: 34px;
     height: 34px;
+    margin-top: 10px;
   }
 
   .mobile-modal {

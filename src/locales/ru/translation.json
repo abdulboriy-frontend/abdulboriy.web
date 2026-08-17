@@ -62,12 +62,29 @@
   "terms": "Условия использования",
 
   "welcome": "Добро пожаловать!",
-  "continueShopping": "Войдите и продолжите покупки",
-  "smsLogin": "ВХОД ПО SMS-КОДУ",
-  "phone": "Номер телефона",
-  "smsHint": "Вам будет отправлен код подтверждения по SMS.",
+  "continueShopping": "Войдите, чтобы продолжить покупки",
+  "emailLabel": "Email адрес",
+  "passwordLabel": "Пароль",
+  "forgotPassword": "Забыли пароль?",
   "or": "или",
   "register": "Зарегистрироваться",
+
+  "loginTitle": "Войти",
+  "loginSubtitle": "Войдите, чтобы продолжить покупки",
+  "emailPlaceholder": "Введите ваш email",
+  "passwordPlaceholder": "Введите ваш пароль",
+  "loginButton": "Войти",
+  "registerButton": "Зарегистрироваться",
+
+  "registerTitle": "Регистрация",
+  "registerSubtitle": "Создайте аккаунт, чтобы продолжить покупки",
+  "nameLabel": "Имя",
+  "namePlaceholder": "Введите ваше имя",
+  "registerEmailPlaceholder": "Введите ваш email",
+  "registerPasswordPlaceholder": "Введите ваш пароль",
+  "registerSubmit": "Зарегистрироваться",
+  "alreadyAccount": "Уже есть аккаунт?",
+  "loginHere": "Войти",
 
   "agreement": "Продолжая, вы соглашаетесь с нашими",
   "serviceTerms": "Условиями обслуживания",
@@ -114,12 +131,14 @@
   "howToOrder": "Как оформить заказ",
   "paymentMethods": "Способы оплаты",
   "warrantyReturn": "Гарантия и возврат",
+
   "sellers": "Для продавцов",
   "becomeSeller": "Стать продавцом",
   "sellerRules": "Правила для продавцов",
   "advertisingMarketing": "Реклама и маркетинг",
   "logisticsSupport": "Логистическая поддержка",
+
   "downloadApp": "Скачайте наше приложение",
   "appDescription": "Будьте всегда на связи и узнавайте о лучших ценах.",
-  "copyright": "© 2024 Minibaba Marketplace. Все права защищены."
+  "copyright": "© 2026 Minibaba Marketplace. Все права защищены."
 }

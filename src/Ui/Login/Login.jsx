@@ -1,79 +1,86 @@
 import React, { useState } from "react";
-import "./logi.css";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import "./logi.css";
 
-export default function Login() {
-  const [phone, setPhone] = useState("");
+const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  function handleSubmit(e) {
+  function onSubmit(e) {
     e.preventDefault();
-    navigate("/");
+    setIsLoading(true);
+
+    const formData = { email, password };
+    console.log(formData);
+
+    axios.post("https://uzum-api.onrender.com/api/auth/login", formData)
+      .then((result) => {
+        console.log(result.data);
+
+        if (result.data.success) {
+          const user = result.data.data;
+          console.log(user);
+
+          localStorage.setItem("accessToken", user.accessToken);
+          localStorage.setItem("user", JSON.stringify(user));
+
+          navigate("/");
+        } else {
+          alert(result.data.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err.response?.data || err.message);
+        alert(err.response?.data?.message);
+      })
+      .finally(() => setIsLoading(false));
   }
 
   return (
     <div className="login-container">
-
-      <footer className="login-footer-top">
-        <a href="#about">{t("about")}</a>
-        <a href="#contacts">{t("contact")}</a>
-        <a href="#terms">{t("terms")}</a>
-
-        <p>{t("copyright")}</p>
-      </footer>
-
-      <form className="login-card" onSubmit={handleSubmit}>
-
+      <form className="login-card" onSubmit={onSubmit}>
         <div className="lock-icon-wrapper">
-          <i className="fas fa-lock-open lock-icon"></i>
+          <i className="fa-solid fa-lock lock-icon"></i>
         </div>
 
-        <h2 className="login-title">
-          {t("welcome")}
-        </h2>
+        <h1 className="login-title">{t("loginTitle")}</h1>
+        <p className="login-subtitle">{t("loginSubtitle")}</p>
 
-        <p className="login-subtitle">
-          {t("continueShopping")}
-        </p>
-
-        <div className="sms-badge">
-          <span className="dot"></span>
-          {t("smsLogin")}
+        <div className="form-group">
+          <label>{t("emailLabel")}</label>
+          <input
+            type="text"
+            placeholder={t("emailPlaceholder")}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
         </div>
 
         <div className="form-group">
-
-          <label>{t("phone")}</label>
-
-          <div className="input-wrapper">
-
-            <span className="country-code">
-              +998
-            </span>
-
-            <input
-              type="text"
-              placeholder="90 123 45 67"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              required
-            />
-
-          </div>
-
-          <span className="input-hint">
-            {t("smsHint")}
-          </span>
-
+          <label>{t("passwordLabel")}</label>
+          <input
+            type="password"
+            placeholder={t("passwordPlaceholder")}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
         </div>
 
-        <button
-          type="submit"
-          className="btn-primary"
-        >
-          {t("login")}
+        <div className="forgot-password-wrapper">
+          <button type="button" className="forgot-password-link">
+            {t("forgotPassword")}
+          </button>
+        </div>
+
+        <button className="btn-primary" type="submit" disabled={isLoading}>
+          {isLoading ? <span className="loader"></span> : t("loginButton")}
         </button>
 
         <div className="divider">
@@ -83,48 +90,13 @@ export default function Login() {
         <button
           type="button"
           className="btn-secondary"
+          onClick={() => navigate("/register")}
         >
-          {t("register")}
+          {t("registerButton")}
         </button>
-
-        <div className="social-login">
-
-          <button
-            type="button"
-            className="social-btn"
-          >
-            <i className="fab fa-google text-google"></i>
-          </button>
-
-          <button
-            type="button"
-            className="social-btn"
-          >
-            <i className="fab fa-facebook text-facebook"></i>
-          </button>
-
-        </div>
-
-        <p className="terms-text">
-
-          {t("agreement")}{" "}
-
-          <a href="#terms">
-            {t("serviceTerms")}
-          </a>{" "}
-
-          {t("and")}{" "}
-
-          <a href="#privacy">
-            {t("privacy")}
-          </a>
-
-          {t("agreementEnd")}
-
-        </p>
-
       </form>
-
     </div>
   );
-}
+};
+
+export default Login;

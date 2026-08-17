@@ -63,11 +63,28 @@
 
   "welcome": "Xush kelibsiz!",
   "continueShopping": "Kirish va xaridni davom ettirish",
-  "smsLogin": "SMS KOD ORQALI KIRISH",
-  "phone": "Telefon raqami",
-  "smsHint": "Sizga SMS orqali tasdiqlash kodi yuboriladi.",
+  "emailLabel": "Email manzilingiz",
+  "passwordLabel": "Parol",
+  "forgotPassword": "Parolni unutdingizmi?",
   "or": "yoki",
   "register": "Ro‘yxatdan o‘tish",
+
+  "loginTitle": "Kirish",
+  "loginSubtitle": "Xaridni davom ettirish uchun kiring",
+  "emailPlaceholder": "Emailingizni kiriting",
+  "passwordPlaceholder": "Parolingizni kiriting",
+  "loginButton": "Kirish",
+  "registerButton": "Ro‘yxatdan o‘tish",
+
+  "registerTitle": "Ro‘yxatdan o‘tish",
+  "registerSubtitle": "Xaridni davom ettirish uchun akkaunt yarating",
+  "nameLabel": "Ism",
+  "namePlaceholder": "Ismingizni kiriting",
+  "registerEmailPlaceholder": "Emailingizni kiriting",
+  "registerPasswordPlaceholder": "Parolingizni kiriting",
+  "registerSubmit": "Ro‘yxatdan o‘tish",
+  "alreadyAccount": "Akkauntingiz bormi?",
+  "loginHere": "Kirish",
 
   "agreement": "Davom etish orqali siz bizning",
   "serviceTerms": "Xizmat ko‘rsatish shartlari",
@@ -114,12 +131,14 @@
   "howToOrder": "Qanday buyurtma berish",
   "paymentMethods": "To‘lov usullari",
   "warrantyReturn": "Kafolat va qaytarish",
+
   "sellers": "Sotuvchilar uchun",
   "becomeSeller": "Sotuvchi bo‘lish",
   "sellerRules": "Sotuvchilar qoidalari",
   "advertisingMarketing": "Reklama va marketing",
   "logisticsSupport": "Logistika yordami",
+
   "downloadApp": "Ilovamizni yuklang",
   "appDescription": "Har doim aloqada bo‘ling va eng yaxshi narxlardan xabardor bo‘ling.",
-  "copyright": "© 2024 Minibaba Marketplace. Barcha huquqlar himoyalangan."
+  "copyright": "© 2026 Minibaba Marketplace. Barcha huquqlar himoyalangan."
 }
