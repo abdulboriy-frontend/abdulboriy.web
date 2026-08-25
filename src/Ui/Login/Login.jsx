@@ -1,48 +1,64 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import { useTranslation } from "react-i18next";
-import "./logi.css";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  function onSubmit(e) {
+  const onSubmit = (e) => {
     e.preventDefault();
     setIsLoading(true);
 
     const formData = { email, password };
-    console.log(formData);
 
-    axios.post("https://uzum-api.onrender.com/api/auth/login", formData)
+    axios
+      .post("https://uzum-api.onrender.com/api/auth/login", formData)
       .then((result) => {
-        console.log(result.data);
-
-        if (result.data.success) {
+        if (result.data.success && result.data.data) {
           const user = result.data.data;
-          console.log(user);
 
-          localStorage.setItem("accessToken", user.accessToken);
+          localStorage.setItem("accessToken", user.accessToken || "");
           localStorage.setItem("user", JSON.stringify(user));
 
-          navigate("/");
+          toast.success("Login muvaffaqiyatli!", {
+            position: "top-right",
+            autoClose: 1000,
+            theme: "colored",
+          });
+
+          // Login muvaffaqiyatli bo'lsa -> Register sahifasiga o'tadi
+          setTimeout(() => {
+            navigate("/Register");
+          }, 1000);
         } else {
-          alert(result.data.message);
+          toast.error(result.data.message || "Login yoki parol xato!", {
+            position: "top-right",
+            autoClose: 3000,
+            theme: "colored",
+          });
         }
       })
       .catch((err) => {
-        console.log(err.response?.data || err.message);
-        alert(err.response?.data?.message);
+        toast.error(err.response?.data?.message || "Serverda xatolik!", {
+          position: "top-right",
+          autoClose: 3000,
+          theme: "colored",
+        });
       })
       .finally(() => setIsLoading(false));
-  }
+  };
 
   return (
     <div className="login-container">
+      <ToastContainer />
       <form className="login-card" onSubmit={onSubmit}>
         <div className="lock-icon-wrapper">
           <i className="fa-solid fa-lock lock-icon"></i>
@@ -54,7 +70,7 @@ const Login = () => {
         <div className="form-group">
           <label>{t("emailLabel")}</label>
           <input
-            type="text"
+            type="email"
             placeholder={t("emailPlaceholder")}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -73,12 +89,6 @@ const Login = () => {
           />
         </div>
 
-        <div className="forgot-password-wrapper">
-          <button type="button" className="forgot-password-link">
-            {t("forgotPassword")}
-          </button>
-        </div>
-
         <button className="btn-primary" type="submit" disabled={isLoading}>
           {isLoading ? <span className="loader"></span> : t("loginButton")}
         </button>
@@ -90,7 +100,7 @@ const Login = () => {
         <button
           type="button"
           className="btn-secondary"
-          onClick={() => navigate("/register")}
+          onClick={() => navigate("/Register")}
         >
           {t("registerButton")}
         </button>

@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import axios from "axios";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import {
@@ -25,54 +26,73 @@ const SellerCard = () => {
   const { slug } = useParams();
   const { t } = useTranslation();
 
-  const [seller] = useState({
-    name: "Fast Food Express",
-    logoUrl: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd",
-    isVerified: true,
-    locationKey: "tashkent", 
-    reliabilityKey: "reliability",
-    responseTimeKey: "responseTime",
-    experienceLabel: "3 yil tajriba"
-  });
+  const [seller, setSeller] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const [products] = useState([
-    {
-      id: 1,
-      nameKey: "margaritaPizza",
-      price: 65000,
-      imageUrl: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002",
-      minOrder: 1
-    },
-    {
-      id: 2,
-      nameKey: "classicBurger",
-      price: 35000,
-      imageUrl: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd",
-      minOrder: 1
-    },
-    {
-      id: 3,
-      nameKey: "pepperoniPizza",
-      price: 75000,
-      imageUrl: "https://images.unsplash.com/photo-1628840042765-356cda07504e",
-      minOrder: 1
-    },
-    {
-      id: 4,
-      nameKey: "frenchFries",
-      price: 18000,
-      imageUrl: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877",
-      minOrder: 2
-    },
-    {
-      id: 5,
-      nameKey: "chickenHotDog",
-      price: 22000,
-      imageUrl: "https://images.unsplash.com/photo-1619740455993-9e612b1af08a",
-      minOrder: 1
+  useEffect(() => {
+    async function fetchSellerData() {
+      try {
+        const res = await axios.get(`https://uzum-api.onrender.com/api/sellers/${slug}`);
+        setSeller(res.data.data);
+        setProducts(res.data.data.products || []);
+      } catch (error) {
+        setSeller({
+          name: "Samarkand Home Goods",
+          logoUrl: "https://images.unsplash.com/photo-1542838132-92c53300491e",
+          isVerified: true,
+          location: "Samarqand",
+          reliabilityScore: 94,
+          responseTimeLabel: "12s",
+          experienceLabel: "5 yillik tajriba"
+        });
+
+        setProducts([
+          {
+            id: 1,
+            name: "O'simlik yog'i 1L",
+            price: 16000,
+            imageUrl: "https://images.unsplash.com/photo-1620706857370-e1b993a58c35",
+            minOrder: 1
+          },
+          {
+            id: 2,
+            name: "Guruch Alanga 1kg",
+            price: 22000,
+            imageUrl: "https://images.unsplash.com/photo-1586201375761-83865001e31c",
+            minOrder: 1
+          },
+          {
+            id: 3,
+            name: "Shakar 1kg",
+            price: 13000,
+            imageUrl: "https://images.unsplash.com/photo-1581441363689-1f3c3c414635",
+            minOrder: 1
+          },
+          {
+            id: 4,
+            name: "Mavsumiy Sabzavotlar To'plami",
+            price: 45000,
+            imageUrl: "https://images.unsplash.com/photo-1610832958506-aa56368176cf",
+            minOrder: 1
+          },
+          {
+            id: 5,
+            name: "Sut mahsuloti 1L",
+            price: 11000,
+            imageUrl: "https://images.unsplash.com/photo-1563636619-e9143da7973b",
+            minOrder: 2
+          }
+        ]);
+      } finally {
+        setLoading(false);
+      }
     }
-  ]);
 
+    fetchSellerData();
+  }, [slug]);
+
+  if (loading) return <div className="load-box"></div>;
   if (!seller) return <h2 className="loading">{t("sellerNotFound")}</h2>;
 
   return (
@@ -106,17 +126,17 @@ const SellerCard = () => {
 
             <p className="seller-location">
               <MapPin size={16} />
-              {t(seller.locationKey)}
+              {seller.location}
             </p>
 
             <div className="seller-badges">
               <span>
                 <ShieldCheck size={15} />
-                98% {t("reliability")}
+                {seller.reliabilityScore || 94}% {t("reliability")}
               </span>
               <span>
                 <Clock3 size={15} />
-                15m - {t("responseTime")}
+                {seller.responseTimeLabel || "12s"} - {t("responseTime")}
               </span>
               <span>
                 <Award size={15} />
@@ -142,13 +162,11 @@ const SellerCard = () => {
         </div>
       </div>
 
-      {/* Tablar */}
       <div className="seller-tabs">
         <button className="active">{t("products")}</button>
         <button>{t("aboutCompany")}</button>
       </div>
 
-      {/* Mahsulotlar Swiper Slayderi */}
       {products.length > 0 ? (
         <Swiper
           modules={[Autoplay, Navigation, Pagination]}
@@ -169,11 +187,11 @@ const SellerCard = () => {
             <SwiperSlide key={product.id}>
               <div className="product-card">
                 <div className="product-image">
-                  <img src={product.imageUrl} alt={t(product.nameKey)} />
+                  <img src={product.imageUrl} alt={product.name} />
                 </div>
 
                 <div className="product-body">
-                  <h3>{t(product.nameKey)}</h3>
+                  <h3>{product.name}</h3>
 
                   <p className="product-price">
                     {Number(product.price).toLocaleString()} so'm

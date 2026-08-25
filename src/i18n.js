@@ -17,18 +17,17 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: localStorage.getItem("i18nextLng") || "uz",
     fallbackLng: "uz",
     supportedLngs: ["uz", "en", "ru"],
 
     detection: {
-      order: ["localStorage"],
+      order: ["localStorage", "cookie", "navigator"],
       caches: ["localStorage"],
       lookupLocalStorage: "i18nextLng"
     },
 
     interpolation: {
-      escapeValue: false
+      escapeValue: false  
     }
   });
 

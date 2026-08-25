@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "./Cart.css";
 
@@ -9,6 +9,26 @@ function Cart({
   removeCartItem
 }) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  const handlePlaceOrder = (item) => {
+    const existingOrders = JSON.parse(localStorage.getItem("orders")) || [];
+
+    const newOrder = {
+      id: item.id || "6a8422d6d5c61d3adf8e358b",
+      name: item.name,
+      quantity: item.quantity,
+      price: item.price,
+      image: item.image,
+      variant: item.variant
+    };
+
+    const updatedOrders = [...existingOrders, newOrder];
+    localStorage.setItem("orders", JSON.stringify(updatedOrders));
+
+    removeCartItem(item.id, item.variant);
+    navigate("/orders");
+  };
 
   const subtotal = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
@@ -76,7 +96,7 @@ function Cart({
             </div>
 
             <div className="size">
-              {item.variant}
+              {item.variant || "-"}
             </div>
 
             <div className="quantity">
@@ -114,6 +134,13 @@ function Cart({
               }
             >
               ×
+            </button>
+
+            <button
+              className="order-single-btn"
+              onClick={() => handlePlaceOrder(item)}
+            >
+              Buyurtma berish
             </button>
 
           </div>

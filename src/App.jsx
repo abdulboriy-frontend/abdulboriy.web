@@ -14,6 +14,8 @@ import SellerCard from "./Ui/sellerCard/SellerCard";
 import Regsiter from "./pages/Register/Register";
 import ProductDetail from "./pages/ProductDetails/ProductDetails";
 import Cart from "./pages/Cart/Cart";
+import Profile from "./Ui/Profile/Profile";
+import Orders from "./Ui/Orders/Orders";
 
 function Home() {
   return (
@@ -168,6 +170,16 @@ function App() {
         <Route
           path="/register"
           element={<Regsiter />}
+        />
+
+        <Route
+          path="/profile"
+          element={<Profile />}
+        />
+
+        <Route
+          path="/orders"
+          element={<Orders />}
         />
 
         <Route

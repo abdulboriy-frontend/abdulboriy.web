@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
-
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   BadgeCheck,
   FileText,
@@ -16,7 +17,6 @@ import {
   Store,
   Truck,
 } from "lucide-react";
-
 import "./ProductDetails.css";
 
 function ProductDetail({ onAddToCart }) {
@@ -26,125 +26,139 @@ function ProductDetail({ onAddToCart }) {
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [variant, setVariant] = useState("proMax");
+  const [activeTab, setActiveTab] = useState("delivery");
 
   useEffect(() => {
-    async function getProduct() {
+    const getProduct = async () => {
       try {
-        const { data } = await axios.get(
+        const res = await axios.get(
           "https://uzum-api.onrender.com/api/products"
         );
 
-        if (!data.success) return;
+        if (!res.data?.success) return;
 
-        const foundProduct = data.data.find(
-          (item) => String(item.slug || item.id) === String(slug)
+        const found = res.data.data.find(
+          item => String(item.slug || item.id) === String(slug)
         );
 
-        setProduct(foundProduct);
+        setProduct(found);
       } catch (error) {
-        console.log(error);
+        console.log("Product error:", error);
       }
-    }
+    };
 
     getProduct();
   }, [slug]);
 
   if (!product) {
-    return <h2>{t("loading")}</h2>;
+    return (
+      <div className="product-loading">
+        <h2>{t("loading")}</h2>
+      </div>
+    );
   }
 
   const images =
     product.images?.length > 0
       ? product.images
-      : [product.imageUrl || "https://via.placeholder.com/600"];
+      : [
+          product.imageUrl ||
+            "https://via.placeholder.com/600x600?text=Product",
+        ];
 
-  const variants = [
-    "standard",
-    "ecoFlow",
-    "proMax",
-    "heavyDuty",
-    "compact",
-  ];
-
-  const normalPrice = Number(product.price) || 1200;
+  const normalPrice = Number(product.price) || 0;
   const discountPrice =
     Number(product.discountedPrice) || normalPrice;
 
-  let unitPrice = normalPrice;
-
-  if (quantity >= 11 && quantity <= 50) {
-    unitPrice = discountPrice;
-  }
-
-  if (quantity >= 51) {
-    unitPrice = 890;
-  }
+  const unitPrice =
+    quantity >= 51
+      ? 890
+      : quantity >= 11
+      ? discountPrice
+      : normalPrice;
 
   const totalPrice = unitPrice * quantity;
 
-  function increaseQuantity() {
-    setQuantity(quantity + 1);
-  }
+  const variants = [
+    { id: "standard", label: t("standard") },
+    { id: "ecoFlow", label: t("ecoFlow") },
+    { id: "proMax", label: t("proMax") },
+    { id: "heavyDuty", label: t("heavyDuty") },
+    { id: "compact", label: t("compact") },
+  ];
 
-  function decreaseQuantity() {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
-    }
-  }
+  const changeQuantity = value => {
+    setQuantity(prev => Math.max(1, prev + value));
+  };
 
-  function handleAddToCart() {
+  const selectPrice = type => {
+    if (type === "normal") setQuantity(1);
+    if (type === "discount") setQuantity(11);
+    if (type === "bulk") setQuantity(51);
+  };
+
+  const handleAddToCart = () => {
     const cartProduct = {
       id: product.id,
       name: product.name || product.title,
       image: product.imageUrl || images[0],
       price: unitPrice,
+      variant,
     };
 
     if (typeof onAddToCart === "function") {
-      onAddToCart(cartProduct, quantity, "Pro-Max X1");
+      onAddToCart(cartProduct, quantity, variant);
     }
 
-    alert(t("addToCart"));
-  }
+    toast.success(t("addToCart"), {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "colored",
+    });
+  };
 
   return (
     <div className="product-detail">
-      <div className="product-container">
+      <ToastContainer />
 
+      <div className="product-container">
         <div className="image-section">
-          <img
-            src={images[selectedImage]}
-            alt={product.name || "Product"}
-            className="main-image"
-          />
+          <div className="main-image-box">
+            <img
+              src={images[selectedImage]}
+              alt={product.name || "Product"}
+              className="main-image"
+            />
+          </div>
 
           <div className="thumbnail-list">
-            {images.slice(0, 5).map((image, index) => (
+            {images.slice(0, 6).map((image, index) => (
               <button
                 key={index}
-                className={
-                  selectedImage === index
-                    ? "thumb-item active"
-                    : "thumb-item"
-                }
+                type="button"
+                className={`thumb-item ${
+                  selectedImage === index ? "active" : ""
+                }`}
                 onClick={() => setSelectedImage(index)}
               >
-                <img src={image} alt="Product" />
+                <img src={image} alt={`Product ${index + 1}`} />
               </button>
             ))}
           </div>
         </div>
 
+        {/* INFO */}
         <div className="info-section">
-
           <div className="badge-row">
-            <div className="badge-new">
-              {t("newProduct")}
-            </div>
-
-            <div className="product-id">
+            <span className="badge-new">{t("newProduct")}</span>
+            <span className="product-id">
               ID: {product.slug || product.id}
-            </div>
+            </span>
           </div>
 
           <h1 className="product-title">
@@ -156,108 +170,99 @@ function ProductDetail({ onAddToCart }) {
               <Star size={17} fill="currentColor" />
               <span>4.8</span>
             </div>
-
             <span>124 {t("ratingReviews")}</span>
             <span>500+ {t("sold")}</span>
           </div>
 
+          {/* WHOLESALE */}
           <div className="wholesale-box">
-
             <div className="wholesale-header">
               <h3>{t("wholesalePrices")}</h3>
-
               <div className="moq-badge">
                 <Package size={16} />
-
                 <span>
-                  {t("moq")}:{" "}
-                  {product.minOrderQuantity || 2}{" "}
+                  {t("moq")}: {product.minOrderQuantity || 2}{" "}
                   {t("pieces")}
                 </span>
               </div>
             </div>
 
             <div className="price-cards-grid">
-
-              <div
+              <button
+                type="button"
                 className={`price-card ${
                   quantity <= 10 ? "active" : ""
                 }`}
+                onClick={() => selectPrice("normal")}
               >
-                <div className="price-range">
+                <span className="price-range">
                   1 - 10 {t("pieces")}
-                </div>
-
-                <div className="price-value">
+                </span>
+                <strong className="price-value">
                   ${normalPrice.toFixed(2)}
-                </div>
-              </div>
+                </strong>
+              </button>
 
-              <div
+              <button
+                type="button"
                 className={`price-card ${
                   quantity >= 11 && quantity <= 50
                     ? "active"
                     : ""
                 }`}
+                onClick={() => selectPrice("discount")}
               >
-                <div className="popular-badge">
+                <span className="popular-badge">
                   {t("popular")}
-                </div>
-
-                <div className="price-range">
+                </span>
+                <span className="price-range">
                   11 - 50 {t("pieces")}
-                </div>
-
-                <div className="price-value">
+                </span>
+                <strong className="price-value">
                   ${discountPrice.toFixed(2)}
-                </div>
-              </div>
+                </strong>
+              </button>
 
-              <div
+              <button
+                type="button"
                 className={`price-card ${
                   quantity >= 51 ? "active" : ""
                 }`}
+                onClick={() => selectPrice("bulk")}
               >
-                <div className="price-range">
+                <span className="price-range">
                   51+ {t("pieces")}
-                </div>
-
-                <div className="price-value">
-                  $890.00
-                </div>
-              </div>
-
+                </span>
+                <strong className="price-value">$890.00</strong>
+              </button>
             </div>
           </div>
 
+          {/* VARIANTS */}
           <div className="variant-section">
-
             <h4 className="variant-title">
               {t("configuration")}
             </h4>
 
             <div className="variant-buttons">
-
-              {variants.map((variant) => (
-                <div
-                  key={variant}
-                  className={
-                    variant === "proMax"
-                      ? "variant-btn active"
-                      : "variant-btn"
-                  }
+              {variants.map(item => (
+                <button
+                  key={item.id}
+                  type="button"
+                  className={`variant-btn ${
+                    variant === item.id ? "active" : ""
+                  }`}
+                  onClick={() => setVariant(item.id)}
                 >
-                  {t(variant)}
-                </div>
+                  {item.label}
+                </button>
               ))}
-
             </div>
           </div>
 
+          {/* SELLER */}
           <div className="seller-card">
-
             <div className="seller-info">
-
               <div className="seller-logo">
                 {product.seller?.logoUrl ? (
                   <img
@@ -265,133 +270,156 @@ function ProductDetail({ onAddToCart }) {
                     alt="Seller"
                   />
                 ) : (
-                  <Store size={23} />
+                  <Store size={24} />
                 )}
               </div>
 
-              <div>
+              <div className="seller-content">
                 <h4>
-                  {product.seller?.name ||
-                    "UzTech Electronics"}
+                  {product.seller?.name || "UzTech Electronics"}
                 </h4>
 
                 <div className="seller-tags">
-
-                  <div className="seller-tag">
+                  <span className="seller-tag">
                     <BadgeCheck size={15} />
-                    <span>{t("sellerVerified")}</span>
-                  </div>
+                    {t("sellerVerified")}
+                  </span>
 
-                  <div className="seller-tag">
+                  <span className="seller-tag">
                     <MapPin size={15} />
-                    <span>{t("tashkent")}</span>
-                  </div>
-
+                    {t("tashkent")}
+                  </span>
                 </div>
               </div>
-
             </div>
 
-            <div className="store-btn">
+            <button type="button" className="store-btn">
               {t("viewStore")}
-            </div>
-
+            </button>
           </div>
-
         </div>
       </div>
 
+      {/* TABS */}
       <div className="tabs-container">
-
         <div className="tabs-header">
-
-          <div className="tab-btn">
+          <button
+            type="button"
+            className={`tab-btn ${
+              activeTab === "description" ? "active" : ""
+            }`}
+            onClick={() => setActiveTab("description")}
+          >
             {t("description")}
-          </div>
+          </button>
 
-          <div className="tab-btn active">
+          <button
+            type="button"
+            className={`tab-btn ${
+              activeTab === "delivery" ? "active" : ""
+            }`}
+            onClick={() => setActiveTab("delivery")}
+          >
             {t("delivery")}
-          </div>
+          </button>
 
-          <div className="tab-btn">
+          <button
+            type="button"
+            className={`tab-btn ${
+              activeTab === "reviews" ? "active" : ""
+            }`}
+            onClick={() => setActiveTab("reviews")}
+          >
             {t("reviews")} (124)
-          </div>
-
+          </button>
         </div>
 
         <div className="tab-content">
-
-          <div className="tab-simple-text">
-
-            <Truck size={27} />
-
-            <div>
-
-              <h3>{t("deliveryTitle")}</h3>
-
-              <p>
-                {t("deliveryText")}
-              </p>
-
+          {activeTab === "description" && (
+            <div className="tab-simple-text">
+              <FileText size={27} />
+              <div>
+                <h3>{t("description")}</h3>
+                <p>
+                  {product.description || t("deliveryText")}
+                </p>
+              </div>
             </div>
+          )}
 
-          </div>
+          {activeTab === "delivery" && (
+            <div className="tab-simple-text">
+              <Truck size={27} />
+              <div>
+                <h3>{t("deliveryTitle")}</h3>
+                <p>{t("deliveryText")}</p>
+              </div>
+            </div>
+          )}
 
+          {activeTab === "reviews" && (
+            <div className="tab-simple-text">
+              <Star size={27} />
+              <div>
+                <h3>{t("reviews")} (124)</h3>
+                <p>4.8 / 5 — 124 {t("ratingReviews")}</p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
+      {/* BOTTOM BAR */}
       <div className="bottom-bar-panel">
-
         <div className="summary-price">
-
-          <div className="total-title">
+          <span className="total-title">
             {t("totalPrice")}
-          </div>
-
-          <div className="total-price">
+          </span>
+          <strong className="total-price">
             ${totalPrice.toFixed(2)}
-          </div>
-
-          <div className="unit-price">
+          </strong>
+          <span className="unit-price">
             {t("onePiece")}: ${unitPrice.toFixed(2)}
-          </div>
-
+          </span>
         </div>
 
         <div className="counter-controls">
-
-          <button onClick={decreaseQuantity}>
+          <button
+            type="button"
+            onClick={() => changeQuantity(-1)}
+          >
             <Minus size={18} />
           </button>
 
-          <div>{quantity}</div>
+          <span>{quantity}</span>
 
-          <button onClick={increaseQuantity}>
+          <button
+            type="button"
+            onClick={() => changeQuantity(1)}
+          >
             <Plus size={18} />
           </button>
-
         </div>
 
         <div className="action-buttons">
-
-          <div className="btn-chat">
+          <button type="button" className="btn-chat">
             <MessageCircle size={18} />
             <span>{t("chat")}</span>
-          </div>
+          </button>
 
-          <div className="btn-rfq">
+          <button type="button" className="btn-rfq">
             <FileText size={18} />
             <span>{t("rfq")}</span>
-          </div>
+          </button>
 
           <button
+            type="button"
             className="btn-cart"
             onClick={handleAddToCart}
           >
             <ShoppingCart size={18} />
             <span>{t("addToCart")}</span>
           </button>
-
         </div>
       </div>
     </div>

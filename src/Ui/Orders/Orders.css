@@ -1,0 +1,129 @@
+.orders-wrapper {
+  max-width: 1000px;
+  margin: 30px auto;
+  padding: 0 20px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+.orders-main-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #0b1e38;
+  margin-bottom: 6px;
+}
+
+.orders-count-text {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.orders-card-container {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.order-item-card {
+  border: 2px solid #ff7a00;
+  border-radius: 12px;
+  padding: 16px 20px;
+  background-color: #fff;
+  text-align: left;
+}
+
+.order-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.order-number-title {
+  font-weight: bold;
+  font-size: 14px;
+  color: #222;
+}
+
+.order-status-badge {
+  background-color: #fff4d8;
+  color: #d99000;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 6px 14px;
+  border-radius: 12px;
+  letter-spacing: 0.5px;
+}
+
+.order-card-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 0;
+}
+
+.order-product-image {
+  width: 90px;
+  height: 90px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.order-product-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.order-product-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #111;
+  margin-bottom: 4px;
+}
+
+.order-product-id,
+.order-product-qty,
+.order-product-price {
+  font-size: 13px;
+  color: #666;
+}
+
+.price-highlight {
+  color: #ff7a00;
+  font-weight: bold;
+}
+
+.order-card-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 8px;
+}
+
+.order-delete-btn {
+  background-color: #ff0000;
+  color: #fff;
+  border: none;
+  padding: 10px 48px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.order-delete-btn:hover {
+  background-color: #d60000;
+}
+
+.no-orders-msg {
+  color: #888;
+  font-size: 16px;
+  padding: 40px 0;
+}

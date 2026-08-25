@@ -3,12 +3,14 @@ import "./navbar.css";
 import { Link } from "react-router-dom";
 import {
   User,
+  CircleUser,
   ShoppingCart,
   Search,
   Camera,
   Menu,
   X,
-  Languages
+  Languages,
+  Package // Buyurtmalarim ikonksi uchun
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Background from "../../assets/Background.png";
@@ -28,38 +30,39 @@ function Navbar({ cartCount }) {
     i18n.language === "ru"
       ? "Русский"
       : i18n.language === "en"
-      ? "English"
-      : "O'zbekcha";
+        ? "English"
+        : "O'zbekcha";
 
   return (
     <>
-      <nav className="navbar">
-        <Link to="/" className="logo">
-          <img src={Background} alt="Logo" className="logo-img" />
-          <h2>Minibaba</h2>
+      <nav className="site-header">
+        <Link to="/" className="brand-logo">
+          <img src={Background} alt="Logo" className="brand-logo__image" />
+          <h2 className="brand-logo__title">Minibaba</h2>
         </Link>
 
-        <div className="search-wrapper">
-          <div className="search-container">
-            <Search className="search-icon" />
+        <div className="search-bar">
+          <div className="search-bar__field">
+            <Search className="search-bar__icon" size={20} />
 
             <input
               type="text"
+              className="search-bar__input"
               placeholder={t("search")}
             />
 
-            <Camera className="camera-icon" />
+            <Camera className="search-bar__camera-icon" size={24} />
           </div>
 
-          <button className="search-btn">
+          <button className="search-bar__button">
             {t("searchBtn")}
           </button>
         </div>
 
-        <div className="menu">
-          <div className="lang-dropdown">
+        <div className="nav-actions">
+          <div className="lang-selector">
             <div
-              className="lang-box"
+              className="lang-selector__trigger"
               onClick={() => setIsLangOpen(!isLangOpen)}
             >
               <Languages size={18} />
@@ -67,23 +70,23 @@ function Navbar({ cartCount }) {
             </div>
 
             {isLangOpen && (
-              <div className="lang-menu">
+              <div className="lang-selector__dropdown">
                 <div
-                  className="lang-item"
+                  className="lang-selector__option"
                   onClick={() => changeLanguage("uz")}
                 >
                   O'zbekcha
                 </div>
 
                 <div
-                  className="lang-item"
+                  className="lang-selector__option"
                   onClick={() => changeLanguage("ru")}
                 >
                   Русский
                 </div>
 
                 <div
-                  className="lang-item"
+                  className="lang-selector__option"
                   onClick={() => changeLanguage("en")}
                 >
                   English
@@ -92,121 +95,126 @@ function Navbar({ cartCount }) {
             )}
           </div>
 
-          <Link to="/login" className="icon-btn">
-            <User className="nav-icon" />
-            <span>{t("login")}</span>
-          </Link>
-
-          <Link to="/cart" className="icon-btn">
-            <div className="cart-icon-wrapper">
-              <ShoppingCart className="nav-icon" />
+          {/* Savat */}
+          <Link to="/cart" className="action-button">
+            <div className="action-button__badge-container">
+              <ShoppingCart className="action-button__icon" size={22} />
 
               {cartCount > 0 && (
-                <span className="cart-badge">
+                <span className="action-button__badge">
                   {cartCount}
                 </span>
               )}
             </div>
+            <span className="action-button__label">{t("cart") || "Savat"}</span>
+          </Link>
 
-            <span>{t("cart")}</span>
+          {/* Buyurtmalarim (Yangi qo'shildi) */}
+          <Link to="/orders" className="action-button">
+            <Package className="action-button__icon" size={22} />
+            <span className="action-button__label">{t("orders") || "Buyurtmalarim"}</span>
+          </Link>
+
+          {/* Profil / Kirish */}
+          <Link to="/profile" className="action-button">
+            <CircleUser className="action-button__icon" size={22} />
+            <span className="action-button__label">{t("profileTitle") || "Profile"}</span>
+          </Link>
+
+          <Link to="/login" className="action-button">
+            <User className="action-button__icon" size={22} />
+            <span className="action-button__label">{t("login") || "Kirish"}</span>
           </Link>
         </div>
 
         <button
-          className="hamburger"
+          className="mobile-toggle-btn"
           onClick={() => setOpen(true)}
         >
           <Menu size={28} />
         </button>
       </nav>
 
+      {/* MOBIL MENYU */}
       {open && (
         <div
-          className="mobile-modal"
+          className="mobile-overlay"
           onClick={() => setOpen(false)}
         >
           <div
-            className="mobile-menu"
+            className="mobile-drawer"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="mobile-header">
+            <div className="mobile-drawer__header">
               <Link
                 to="/"
-                className="logo"
+                className="brand-logo"
                 onClick={() => setOpen(false)}
               >
                 <img
                   src={Background}
                   alt="Logo"
-                  className="logo-img"
+                  className="brand-logo__image"
                 />
 
-                <h2>Minibaba</h2>
+                <h2 className="brand-logo__title">Minibaba</h2>
               </Link>
 
               <button
-                className="close-btn"
+                className="mobile-drawer__close-btn"
                 onClick={() => setOpen(false)}
               >
                 <X size={26} />
               </button>
             </div>
 
-            <hr className="mobile-line" />
+            <hr className="mobile-drawer__divider" />
 
-            <div className="mobile-search">
+            <div className="mobile-drawer__search">
               <div className="mobile-search-box">
-                <Search className="search-icon" />
+                <Search className="mobile-search-box__icon" size={18} />
 
                 <input
                   type="text"
+                  className="mobile-search-box__input"
                   placeholder={t("searchMobile")}
                 />
 
-                <button className="mobile-search-btn">
+                <button className="mobile-search-box__button">
                   {t("searchBtn")}
                 </button>
               </div>
             </div>
 
-            <div className="mobile-bottom">
-              <div className="lang-dropdown">
+            <div className="mobile-drawer__footer">
+              <div className="lang-selector">
                 <div
-                  className="lang-box"
-                  onClick={() =>
-                    setIsLangOpen(!isLangOpen)
-                  }
+                  className="lang-selector__trigger"
+                  onClick={() => setIsLangOpen(!isLangOpen)}
                 >
                   <Languages size={18} />
-
                   <span>{currentLang}</span>
                 </div>
 
                 {isLangOpen && (
-                  <div className="lang-menu">
+                  <div className="lang-selector__dropdown">
                     <div
-                      className="lang-item"
-                      onClick={() =>
-                        changeLanguage("uz")
-                      }
+                      className="lang-selector__option"
+                      onClick={() => changeLanguage("uz")}
                     >
                       O'zbekcha
                     </div>
 
                     <div
-                      className="lang-item"
-                      onClick={() =>
-                        changeLanguage("ru")
-                      }
+                      className="lang-selector__option"
+                      onClick={() => changeLanguage("ru")}
                     >
                       Русский
                     </div>
 
                     <div
-                      className="lang-item"
-                      onClick={() =>
-                        changeLanguage("en")
-                      }
+                      className="lang-selector__option"
+                      onClick={() => changeLanguage("en")}
                     >
                       English
                     </div>
@@ -214,33 +222,49 @@ function Navbar({ cartCount }) {
                 )}
               </div>
 
-              <div className="mobile-icons">
+              <div className="mobile-drawer__actions">
                 <Link
                   to="/cart"
-                  className="icon-btn"
+                  className="action-button"
                   onClick={() => setOpen(false)}
                 >
-                  <div className="cart-icon-wrapper">
-                    <ShoppingCart className="nav-icon" />
+                  <div className="action-button__badge-container">
+                    <ShoppingCart className="action-button__icon" size={22} />
 
                     {cartCount > 0 && (
-                      <span className="cart-badge">
+                      <span className="action-button__badge">
                         {cartCount}
                       </span>
                     )}
                   </div>
+                  <span className="action-button__label">{t("cart") || "Savat"}</span>
+                </Link>
 
-                  <span>{t("cart")}</span>
+                <Link
+                  to="/orders"
+                  className="action-button"
+                  onClick={() => setOpen(false)}
+                >
+                  <Package className="action-button__icon" size={22} />
+                  <span className="action-button__label">{t("orders") || "Buyurtmalarim"}</span>
+                </Link>
+
+                <Link
+                  to="/profile"
+                  className="action-button"
+                  onClick={() => setOpen(false)}
+                >
+                  <CircleUser className="action-button__icon" size={22} />
+                  <span className="action-button__label">{t("profileTitle") || "Profile"}</span>
                 </Link>
 
                 <Link
                   to="/login"
-                  className="icon-btn"
+                  className="action-button"
                   onClick={() => setOpen(false)}
                 >
-                  <User className="nav-icon" />
-
-                  <span>{t("login")}</span>
+                  <User className="action-button__icon" size={22} />
+                  <span className="action-button__label">{t("login") || "Kirish"}</span>
                 </Link>
               </div>
             </div>
