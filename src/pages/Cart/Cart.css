@@ -126,7 +126,7 @@
 .order-single-btn {
   height: 40px;
   padding: 0 16px;
-  background: #5146c9;
+  background: #ff6f00;
   color: #ffffff;
   border: none;
   border-radius: 8px;
@@ -138,7 +138,7 @@
 }
 
 .order-single-btn:hover {
-  background: #3e34ab;
+  background: #e66400;
 }
 
 .summary {
@@ -199,11 +199,16 @@
   width: 185px;
   border: none;
   border-radius: 0 8px 8px 0;
-  background: #5146c9;
+  background: #ff6f00;
   color: white;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  transition: background 0.2s;
+}
+
+.promo button:hover {
+  background: #e66400;
 }
 
 .bottom-buttons {
@@ -226,14 +231,23 @@
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
+  transition: background 0.2s;
 }
 
 .back {
-  background: #192333;
+  background: #4db6ac;
+}
+
+.back:hover {
+  background: #399d93;
 }
 
 .checkout {
-  background: #5146c9;
+  background: #ff6f00;
+}
+
+.checkout:hover {
+  background: #e66400;
 }
 
 .empty-cart {
@@ -249,10 +263,15 @@
 
 .empty-cart a {
   padding: 12px 25px;
-  background: #5146c9;
+  background: #ff6f00;
   color: white;
   text-decoration: none;
   border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.empty-cart a:hover {
+  background: #e66400;
 }
 
 @media (max-width: 800px) {

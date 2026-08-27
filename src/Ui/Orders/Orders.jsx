@@ -1,68 +1,86 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
 import "./Orders.css";
 
-function Orders() {
+const Orders = () => {
+  const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const savedOrders = JSON.parse(localStorage.getItem("orders")) || [];
-    setOrders(savedOrders);
-  }, []);
-
-  const handleDelete = (id) => {
-    const updatedOrders = orders.filter((order) => order.id !== id);
-    setOrders(updatedOrders);
-    localStorage.setItem("orders", JSON.stringify(updatedOrders));
+  const getOrders = async () => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      toast.warning("Iltimos avval tizimga kiring!");
+      setLoading(false);
+      return;
+    }
+    try {
+      const res = await axios.get("https://uzum-api.onrender.com/api/orders", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = res.data.data || res.data.orders || res.data || [];
+      setOrders(Array.isArray(data) ? data : []);
+    } catch (error) {
+      toast.error("Buyurtmalarni yuklashda xatolik!");
+    } finally {
+      setLoading(false);
+    }
   };
 
+  useEffect(() => { getOrders(); }, []);
+
+  if (loading) return <div className="orders-page"><div className="orders-header"><h1>Mening Buyurtmalarim</h1><p>Yuklanmoqda...</p></div></div>;
+
   return (
-    <div className="orders-wrapper">
-      <h1 className="orders-main-title">Mening Buyurtmalarim</h1>
-      <p className="orders-count-text">Jami buyurtmalar: {orders.length}</p>
+    <div className="orders-page">
+      <div className="orders-header">
+        <h1>Mening Buyurtmalarim</h1>
+        <p>Jami buyurtmalar: {orders.length}</p>
+      </div>
 
-      <div className="orders-card-container">
-        {orders.length > 0 ? (
-          orders.map((order, index) => (
-            <div key={order.id || index} className="order-item-card">
-              <div className="order-card-header">
-                <span className="order-number-title">Buyurtma #{index + 1}</span>
-                <span className="order-status-badge">JARAYONDA</span>
-              </div>
+      <div className="orders-container">
+        {orders.length === 0 ? (
+          <div className="no-orders">
+            <h2>Hali buyurtma bermagansiz</h2>
+            <p>Xarid qilishni boshlash uchun do'konimizga o'ting</p>
+            <button className="shop-btn" onClick={() => navigate("/")}>Do'konga o'tish</button>
+          </div>
+        ) : (
+          <div className="orders-list">
+            {orders.map((order, index) => (
+              <div className="order-card" key={order._id || order.id || index}>
+                <div className="order-header">
+                  <span>Buyurtma #{index + 1}</span>
+                  <span>{order.status || "Jarayonda"}</span>
+                </div>
 
-              <div className="order-card-content">
-                <img
-src={order.image || "https://via.placeholder.com/100"}
-                  alt={order.name}
-                  className="order-product-image"
-                />
-                <div className="order-product-details">
-                  <h3 className="order-product-title">{order.name}</h3>
-                  <p className="order-product-id">
-                    <strong>ID:</strong> {order.id}
-                  </p>
-                  <p className="order-product-qty">
-                    <strong>Soni:</strong> {order.quantity}
-                  </p>
-                  <p className="order-product-price">
-                    <strong>Narxi:</strong>{" "}
-                    <span className="price-highlight">${order.price}.00</span>
-                  </p>
+                {(order.items || []).map((item, i) => (
+                  <div className="order-body" key={item.productId || i}>
+                    <img
+                      className="order-image"
+                      src={item.imageUrl || item.product?.imageUrl || "https://via.placeholder.com/70"}
+                      alt={item.name || "Mahsulot"}
+                    />
+                    <div className="order-info">
+                      <h3>{item.name || item.product?.name}</h3>
+                      <span>Soni: {item.quantity || 1}</span>
+                      <span>Narxi: {item.price || 0} {order.currency || ""}</span>
+                    </div>
+                  </div>
+                ))}
+
+                <div className="order-footer">
+                  <b>Jami: {order.total || 0} {order.currency || ""}</b>
                 </div>
               </div>
-
-              <div className="order-card-footer">
- <button className="order-delete-btn"onClick={() => handleDelete(order.id)} >
-                  O'chirish
-                </button>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p className="no-orders-msg">Hozircha buyurtmalar yo'q</p>
+            ))}
+          </div>
         )}
       </div>
     </div>
   );
-}
+};
 
 export default Orders;

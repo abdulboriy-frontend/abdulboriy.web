@@ -1,272 +1,168 @@
-import React, { useState } from "react";
-import "./navbar.css";
-import { Link } from "react-router-dom";
-import {
-  User,
-  CircleUser,
-  ShoppingCart,
-  Search,
-  Camera,
-  Menu,
-  X,
-  Languages,
-  Package // Buyurtmalarim ikonksi uchun
-} from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { User, CircleUser, ShoppingCart, Search, Camera, Menu, X, Languages, Package, LogOut } from "lucide-react";
 import Background from "../../assets/Background.png";
+import "./navbar.css";
 
-function Navbar({ cartCount }) {
-  const [open, setOpen] = useState(false);
+const LANGUAGES = [
+  { code: "uz", label: "O'zbekcha" },
+  { code: "ru", label: "Русский" },
+  { code: "en", label: "English" },
+];
+
+function Navbar({ cartCount = 0 }) {
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
 
+  const navigate = useNavigate();
   const { t, i18n } = useTranslation();
 
-  function changeLanguage(lang) {
-    i18n.changeLanguage(lang);
-    setIsLangOpen(false);
-  }
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        setCurrentUser(JSON.parse(storedUser));
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }, []);
 
-  const currentLang =
-    i18n.language === "ru"
-      ? "Русский"
-      : i18n.language === "en"
-        ? "English"
-        : "O'zbekcha";
+  const changeLanguage = (langCode) => {
+    i18n.changeLanguage(langCode);
+    setIsLangOpen(false);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("accessToken");
+    setCurrentUser(null);
+    setIsMobileOpen(false);
+    navigate("/login");
+  };
+
+  const getCurrentLanguageLabel = () => {
+    const found = LANGUAGES.find((lang) => lang.code === i18n.language);
+    return found ? found.label : "O'zbekcha";
+  };
 
   return (
     <>
-      <nav className="site-header">
+      <header className="site-header">
         <Link to="/" className="brand-logo">
-          <img src={Background} alt="Logo" className="brand-logo__image" />
+          <img src={Background} alt="Minibaba Logo" className="brand-logo__image" />
           <h2 className="brand-logo__title">Minibaba</h2>
         </Link>
 
         <div className="search-bar">
           <div className="search-bar__field">
             <Search className="search-bar__icon" size={20} />
-
-            <input
-              type="text"
-              className="search-bar__input"
-              placeholder={t("search")}
-            />
-
+            <input type="text" className="search-bar__input" placeholder={t("search")} />
             <Camera className="search-bar__camera-icon" size={24} />
           </div>
-
-          <button className="search-bar__button">
-            {t("searchBtn")}
-          </button>
+          <button type="button" className="search-bar__button">{t("searchBtn")}</button>
         </div>
 
         <div className="nav-actions">
           <div className="lang-selector">
-            <div
-              className="lang-selector__trigger"
-              onClick={() => setIsLangOpen(!isLangOpen)}
-            >
+            <button type="button" className="lang-selector__trigger" onClick={() => setIsLangOpen((prev) => !prev)}>
               <Languages size={18} />
-              <span>{currentLang}</span>
-            </div>
+              <span>{getCurrentLanguageLabel()}</span>
+            </button>
 
             {isLangOpen && (
               <div className="lang-selector__dropdown">
-                <div
-                  className="lang-selector__option"
-                  onClick={() => changeLanguage("uz")}
-                >
-                  O'zbekcha
-                </div>
-
-                <div
-                  className="lang-selector__option"
-                  onClick={() => changeLanguage("ru")}
-                >
-                  Русский
-                </div>
-
-                <div
-                  className="lang-selector__option"
-                  onClick={() => changeLanguage("en")}
-                >
-                  English
-                </div>
+                {LANGUAGES.map((lang) => (
+                  <button key={lang.code} type="button" className="lang-selector__option" onClick={() => changeLanguage(lang.code)}>
+                    {lang.label}
+                  </button>
+                ))}
               </div>
             )}
           </div>
 
-          {/* Savat */}
           <Link to="/cart" className="action-button">
             <div className="action-button__badge-container">
               <ShoppingCart className="action-button__icon" size={22} />
-
-              {cartCount > 0 && (
-                <span className="action-button__badge">
-                  {cartCount}
-                </span>
-              )}
+              {cartCount > 0 && <span className="action-button__badge">{cartCount}</span>}
             </div>
             <span className="action-button__label">{t("cart") || "Savat"}</span>
           </Link>
 
-          {/* Buyurtmalarim (Yangi qo'shildi) */}
           <Link to="/orders" className="action-button">
             <Package className="action-button__icon" size={22} />
             <span className="action-button__label">{t("orders") || "Buyurtmalarim"}</span>
           </Link>
 
-          {/* Profil / Kirish */}
-          <Link to="/profile" className="action-button">
-            <CircleUser className="action-button__icon" size={22} />
-            <span className="action-button__label">{t("profileTitle") || "Profile"}</span>
-          </Link>
-
-          <Link to="/login" className="action-button">
-            <User className="action-button__icon" size={22} />
-            <span className="action-button__label">{t("login") || "Kirish"}</span>
-          </Link>
+          {currentUser ? (
+            <>
+              <Link to="/profile" className="action-button">
+                <CircleUser className="action-button__icon" size={22} />
+                <span className="action-button__label">{currentUser.name ? currentUser.name.split(" ")[0] : "Profil"}</span>
+              </Link>
+              <button type="button" className="action-button logout-btn" onClick={handleLogout}>
+                <LogOut className="action-button__icon" size={22} color="#ff4d4f" />
+                <span className="action-button__label" style={{ color: "#ff4d4f" }}>Chiqish</span>
+              </button>
+            </>
+          ) : (
+            <Link to="/login" className="action-button">
+              <User className="action-button__icon" size={22} />
+              <span className="action-button__label">{t("login") || "Kirish"}</span>
+            </Link>
+          )}
         </div>
 
-        <button
-          className="mobile-toggle-btn"
-          onClick={() => setOpen(true)}
-        >
+        <button type="button" className="mobile-toggle-btn" onClick={() => setIsMobileOpen(true)}>
           <Menu size={28} />
         </button>
-      </nav>
+      </header>
 
-      {/* MOBIL MENYU */}
-      {open && (
-        <div
-          className="mobile-overlay"
-          onClick={() => setOpen(false)}
-        >
-          <div
-            className="mobile-drawer"
-            onClick={(e) => e.stopPropagation()}
-          >
+      {isMobileOpen && (
+        <div className="mobile-overlay" onClick={() => setIsMobileOpen(false)}>
+          <div className="mobile-drawer" onClick={(e) => e.stopPropagation()}>
             <div className="mobile-drawer__header">
-              <Link
-                to="/"
-                className="brand-logo"
-                onClick={() => setOpen(false)}
-              >
-                <img
-                  src={Background}
-                  alt="Logo"
-                  className="brand-logo__image"
-                />
-
+              <Link to="/" className="brand-logo" onClick={() => setIsMobileOpen(false)}>
+                <img src={Background} alt="Minibaba Logo" className="brand-logo__image" />
                 <h2 className="brand-logo__title">Minibaba</h2>
               </Link>
-
-              <button
-                className="mobile-drawer__close-btn"
-                onClick={() => setOpen(false)}
-              >
+              <button type="button" className="mobile-drawer__close-btn" onClick={() => setIsMobileOpen(false)}>
                 <X size={26} />
               </button>
             </div>
 
             <hr className="mobile-drawer__divider" />
 
-            <div className="mobile-drawer__search">
-              <div className="mobile-search-box">
-                <Search className="mobile-search-box__icon" size={18} />
+            <div className="mobile-drawer__actions">
+              <Link to="/cart" className="action-button" onClick={() => setIsMobileOpen(false)}>
+                <ShoppingCart size={22} />
+                <span>{t("cart") || "Savat"}</span>
+              </Link>
 
-                <input
-                  type="text"
-                  className="mobile-search-box__input"
-                  placeholder={t("searchMobile")}
-                />
+              <Link to="/orders" className="action-button" onClick={() => setIsMobileOpen(false)}>
+                <Package size={22} />
+                <span>{t("orders") || "Buyurtmalarim"}</span>
+              </Link>
 
-                <button className="mobile-search-box__button">
-                  {t("searchBtn")}
-                </button>
-              </div>
-            </div>
-
-            <div className="mobile-drawer__footer">
-              <div className="lang-selector">
-                <div
-                  className="lang-selector__trigger"
-                  onClick={() => setIsLangOpen(!isLangOpen)}
-                >
-                  <Languages size={18} />
-                  <span>{currentLang}</span>
-                </div>
-
-                {isLangOpen && (
-                  <div className="lang-selector__dropdown">
-                    <div
-                      className="lang-selector__option"
-                      onClick={() => changeLanguage("uz")}
-                    >
-                      O'zbekcha
-                    </div>
-
-                    <div
-                      className="lang-selector__option"
-                      onClick={() => changeLanguage("ru")}
-                    >
-                      Русский
-                    </div>
-
-                    <div
-                      className="lang-selector__option"
-                      onClick={() => changeLanguage("en")}
-                    >
-                      English
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div className="mobile-drawer__actions">
-                <Link
-                  to="/cart"
-                  className="action-button"
-                  onClick={() => setOpen(false)}
-                >
-                  <div className="action-button__badge-container">
-                    <ShoppingCart className="action-button__icon" size={22} />
-
-                    {cartCount > 0 && (
-                      <span className="action-button__badge">
-                        {cartCount}
-                      </span>
-                    )}
-                  </div>
-                  <span className="action-button__label">{t("cart") || "Savat"}</span>
+              {currentUser ? (
+                <>
+                  <Link to="/profile" className="action-button" onClick={() => setIsMobileOpen(false)}>
+                    <CircleUser size={22} />
+                    <span>{currentUser.name || "Profil"}</span>
+                  </Link>
+                  <button type="button" className="action-button" onClick={handleLogout}>
+                    <LogOut size={22} color="#ff4d4f" />
+                    <span style={{ color: "#ff4d4f" }}>Chiqish</span>
+                  </button>
+                </>
+              ) : (
+                <Link to="/login" className="action-button" onClick={() => setIsMobileOpen(false)}>
+                  <User size={22} />
+                  <span>{t("login") || "Kirish"}</span>
                 </Link>
-
-                <Link
-                  to="/orders"
-                  className="action-button"
-                  onClick={() => setOpen(false)}
-                >
-                  <Package className="action-button__icon" size={22} />
-                  <span className="action-button__label">{t("orders") || "Buyurtmalarim"}</span>
-                </Link>
-
-                <Link
-                  to="/profile"
-                  className="action-button"
-                  onClick={() => setOpen(false)}
-                >
-                  <CircleUser className="action-button__icon" size={22} />
-                  <span className="action-button__label">{t("profileTitle") || "Profile"}</span>
-                </Link>
-
-                <Link
-                  to="/login"
-                  className="action-button"
-                  onClick={() => setOpen(false)}
-                >
-                  <User className="action-button__icon" size={22} />
-                  <span className="action-button__label">{t("login") || "Kirish"}</span>
-                </Link>
-              </div>
+              )}
             </div>
           </div>
         </div>

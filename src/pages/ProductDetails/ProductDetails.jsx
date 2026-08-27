@@ -152,7 +152,6 @@ function ProductDetail({ onAddToCart }) {
           </div>
         </div>
 
-        {/* INFO */}
         <div className="info-section">
           <div className="badge-row">
             <span className="badge-new">{t("newProduct")}</span>
@@ -174,7 +173,6 @@ function ProductDetail({ onAddToCart }) {
             <span>500+ {t("sold")}</span>
           </div>
 
-          {/* WHOLESALE */}
           <div className="wholesale-box">
             <div className="wholesale-header">
               <h3>{t("wholesalePrices")}</h3>
@@ -238,7 +236,6 @@ function ProductDetail({ onAddToCart }) {
             </div>
           </div>
 
-          {/* VARIANTS */}
           <div className="variant-section">
             <h4 className="variant-title">
               {t("configuration")}
@@ -260,7 +257,6 @@ function ProductDetail({ onAddToCart }) {
             </div>
           </div>
 
-          {/* SELLER */}
           <div className="seller-card">
             <div className="seller-info">
               <div className="seller-logo">
@@ -369,7 +365,6 @@ function ProductDetail({ onAddToCart }) {
         </div>
       </div>
 
-      {/* BOTTOM BAR */}
       <div className="bottom-bar-panel">
         <div className="summary-price">
           <span className="total-title">

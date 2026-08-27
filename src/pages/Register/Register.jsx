@@ -19,43 +19,19 @@ const Register = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    const formData = { name, email, password };
-
-    axios
-      .post("https://uzum-api.onrender.com/api/auth/register", formData)
+    axios.post("https://uzum-api.onrender.com/api/auth/register", { name, email, password })
       .then((result) => {
         if (result.data.success) {
           const user = result.data.data;
-
-          if (user?.accessToken) {
-            localStorage.setItem("accessToken", user.accessToken);
-          }
+          if (user?.accessToken) localStorage.setItem("accessToken", user.accessToken);
           localStorage.setItem("user", JSON.stringify(user));
-
-          toast.success("Ro'yxatdan o'tildi!", {
-            position: "top-right",
-            autoClose: 1000,
-            theme: "colored",
-          });
-
-          setTimeout(() => {
-            navigate("/Profile");
-          }, 1000);
+          toast.success("Ro'yxatdan o'tildi!", { position: "top-right", autoClose: 1000, theme: "colored" });
+          setTimeout(() => navigate("/"), 1000);
         } else {
-          toast.error(result.data.message || "Xatolik yuz berdi!", {
-            position: "top-right",
-            autoClose: 3000,
-            theme: "colored",
-          });
+          toast.error(result.data.message || "Xatolik yuz berdi!", { position: "top-right", autoClose: 3000, theme: "colored" });
         }
       })
-      .catch((err) => {
-        toast.error(err.response?.data?.message || "Serverda xatolik!", {
-          position: "top-right",
-          autoClose: 3000,
-          theme: "colored",
-        });
-      })
+      .catch((err) => toast.error(err.response?.data?.message || "Serverda xatolik!", { position: "top-right", autoClose: 3000, theme: "colored" }))
       .finally(() => setIsLoading(false));
   };
 
@@ -68,50 +44,26 @@ const Register = () => {
 
         <div className="form-group">
           <label>{t("nameLabel")}</label>
-          <input
-            type="text"
-            placeholder={t("namePlaceholder")}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
+          <input type="text" placeholder={t("namePlaceholder")} value={name} onChange={(e) => setName(e.target.value)} required />
         </div>
 
         <div className="form-group">
           <label>{t("emailLabel")}</label>
-          <input
-            type="email"
-            placeholder={t("registerEmailPlaceholder")}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+          <input type="email" placeholder={t("registerEmailPlaceholder")} value={email} onChange={(e) => setEmail(e.target.value)} required />
         </div>
 
         <div className="form-group">
           <label>{t("passwordLabel")}</label>
-          <input
-            type="password"
-            placeholder={t("registerPasswordPlaceholder")}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+          <input type="password" placeholder={t("registerPasswordPlaceholder")} value={password} onChange={(e) => setPassword(e.target.value)} required />
         </div>
 
         <button className="register-btn" type="submit" disabled={isLoading}>
           {isLoading ? <span className="loader"></span> : t("registerSubmit")}
         </button>
 
-        <div className="divider">
-          <span>{t("or")}</span>
-        </div>
+        <div className="divider"><span>{t("or")}</span></div>
 
-        <button
-          type="button"
-          className="login-btn"
-          onClick={() => navigate("/login")}
-        >
+        <button type="button" className="login-btn" onClick={() => navigate("/login")}>
           {t("loginHere")}
         </button>
       </form>
